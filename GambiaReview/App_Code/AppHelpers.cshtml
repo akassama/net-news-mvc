@@ -1,0 +1,1544 @@
+﻿@using System.Web.Mvc.Html;
+@using System.Text.RegularExpressions;
+@using System.Linq;
+@using System.Data;
+
+
+
+<!-- Check if total of atleast 6 News Available -->
+@helper GetTotalNewsArticles()
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT COUNT(*) FROM [NewsArticles];";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+
+<!-- Get Headline Text  -->
+@helper GetHeadlineText(int position)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT TOP 1 * FROM Table ORDER BY ID DESC";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+
+    returnValue = dbValue.ToString();
+}
+    @returnValue;
+}
+
+<!-- Get News Articles Data //Review Function -->
+@helper ReturnArticleData(int id, string return_string)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    return_string = System.Security.SecurityElement.Escape(return_string);
+    cmd.CommandText = "SELECT [" + return_string + "] FROM [NewsArticles] WHERE ID = @id";
+    cmd.Parameters.AddWithValue("@id", id);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    try
+    {
+        if (dbValue != null)
+        {
+            returnValue = dbValue.ToString();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+}
+    @returnValue;
+}
+
+<!-- Get Table Data  -->
+@helper ReturnTableData(int id, string table_name, string return_string)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    table_name = System.Security.SecurityElement.Escape(table_name);
+    return_string = System.Security.SecurityElement.Escape(return_string);
+    cmd.CommandText = "SELECT [" + return_string + "] FROM [" + table_name + "] WHERE ID = @id";
+    cmd.Parameters.AddWithValue("@id", id);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+
+<!-- Get Table Data  -->
+@helper ReturnTableData(string column, string unique_value, string table_name, string return_string)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    column = System.Security.SecurityElement.Escape(column);
+    table_name = System.Security.SecurityElement.Escape(table_name);
+    return_string = System.Security.SecurityElement.Escape(return_string);
+    cmd.CommandText = "SELECT [" + return_string + "] FROM [" + table_name + "] WHERE [" + column + "] = @unique_value";
+    cmd.Parameters.AddWithValue("@unique_value", unique_value);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+<!-- Get Article By -->
+@helper GetArticleBy(int id)
+{
+string article_by_email = ReturnArticleData(id, "ArticleBy").ToString();
+var article_by_f_name = ReturnTableData("Email", article_by_email, "Accounts", "FirstName");
+var article_by_l_name = ReturnTableData("Email", article_by_email, "Accounts", "LastName");
+var returnValue = "Admin";
+if (article_by_f_name != null && article_by_l_name != null)
+{
+    returnValue = article_by_f_name.ToString() + " " + article_by_l_name.ToString();
+}
+else if (article_by_f_name != null && article_by_l_name == null)
+{
+    returnValue = article_by_f_name.ToString();
+}
+    @returnValue;
+}
+
+<!-- Get Article By Using Email -->
+@helper GetArticleBy(string email)
+{
+var article_by_f_name = ReturnTableData("Email", email, "Accounts", "FirstName");
+var article_by_l_name = ReturnTableData("Email", email, "Accounts", "LastName");
+var returnValue = "Unknown";
+if (article_by_f_name != null && article_by_l_name != null)
+{
+    returnValue = article_by_f_name.ToString() + " " + article_by_l_name.ToString();
+}
+else if (article_by_f_name != null && article_by_l_name == null)
+{
+    returnValue = article_by_f_name.ToString();
+}
+    @returnValue;
+}
+
+<!-- Get Article Category -->
+@helper GetArticleCategory(int id)
+{
+var returnValue = "Default";
+int category_id = 0;
+if (!string.IsNullOrEmpty(ReturnArticleData(id, "ArticleCategory").ToString())) { category_id = Int32.Parse(ReturnArticleData(id, "ArticleCategory").ToString()); }
+
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT [CategoryName] FROM [Categories] WHERE [ID] = @category_id";
+    cmd.Parameters.AddWithValue("@category_id", category_id);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+<!-- Get Article Category ID -->
+@helper GetArticleCategoryID(string category_name)
+{
+var returnValue = "0";
+
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT [ID] FROM [Categories] WHERE [CategoryName] = @category_name";
+    cmd.Parameters.AddWithValue("@category_name", category_name);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+<!-- Format Article Date  -->
+@helper FormatArticleDate(string date)
+{
+string new_date = Convert.ToDateTime(date).ToString("MMM dd, yyyy");
+    @new_date;
+}
+
+<!-- Get The Total Comments -->
+@helper GetTheTotalComments(int article_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT COUNT(*) FROM [ArticleComments] WHERE [ArticleID] = @article_id";
+    cmd.Parameters.AddWithValue("@article_id", article_id);
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+<!-- Get The Total Comments -->
+@helper GetTheTotalComments(string article_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+if (!String.IsNullOrEmpty(article_id))
+{
+    using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+    {
+        System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+        System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+        Object dbValue;
+
+        cmd.CommandText = "SELECT COUNT(*) FROM [ArticleComments] WHERE [ArticleID] = @article_id";
+        cmd.Parameters.AddWithValue("@article_id", article_id);
+        cmd.CommandType = System.Data.CommandType.Text;
+        cmd.Connection = sqlConnection;
+
+        sqlConnection.Open();
+
+        dbValue = cmd.ExecuteScalar();
+
+        sqlConnection.Close();
+        if (dbValue != null)
+        {
+            returnValue = dbValue.ToString();
+        }
+    }
+}
+
+    @returnValue;
+}
+
+<!-- Get The Total Page Views -->
+@helper GetTheTotalPageViews(string article_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+if (!String.IsNullOrEmpty(article_id))
+{
+    using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+    {
+        System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+        System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+        Object dbValue;
+
+        cmd.CommandText = "SELECT COUNT(*) FROM [PageVisits] WHERE [ArticleID] = @article_id";
+        cmd.Parameters.AddWithValue("@article_id", article_id);
+        cmd.CommandType = System.Data.CommandType.Text;
+        cmd.Connection = sqlConnection;
+
+        sqlConnection.Open();
+
+        dbValue = cmd.ExecuteScalar();
+
+        sqlConnection.Close();
+        if (dbValue != null)
+        {
+            returnValue = dbValue.ToString();
+        }
+    }
+}
+
+    @returnValue;
+}
+
+@helper FormatLongTextOld(string text, int length)
+{
+string return_string = text;
+if (!string.IsNullOrEmpty(text))
+{
+    if (text.Length > length)
+    {
+        return_string = Regex.Replace(return_string, "<.*?>", String.Empty);
+        return_string = text.Substring(0, (length - 1)) + "...";
+    }
+}
+    @return_string
+}
+
+<!--https://stackoverflow.com/questions/1613896/truncate-string-on-whole-words-in-net-c-sharp-->
+@helper FormatLongText(string text, int max_length)
+{
+if (text != null && text.Length > max_length)
+{
+    int iNextSpace = text.LastIndexOf(" ", max_length, StringComparison.Ordinal);
+    text = string.Format("{0}...", text.Substring(0, (iNextSpace > 0) ? iNextSpace : max_length).Trim());
+}
+    @text
+}
+
+<!--https://stackoverflow.com/questions/18153998/how-do-i-remove-all-html-tags-from-a-string-without-knowing-which-tags-are-in-it-->
+@helper StripHTML(string text)
+{
+
+text = Regex.Replace(text, "<.*?>", "");
+//text = text.Replace("&quot;", "");
+//text = text.Replace("&amp;", "");
+//text = text.Replace("nbsp;", "");
+
+    @text
+}
+
+
+@helper GetRecentNewsArticles(int total)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[ArticleTextIdentifier] ,[ArticleBy] ,[ArticleCategory] ,[ArticleDate] ,[ArticleHeadline] 
+    ,[ArticleHeadlineImage] ,[HeadlineImageDescription] ,[ArticleBody] ,[DeleteStatus] ,[Tags], [ReviewStatus] FROM  [NewsArticles] WHERE [DeleteStatus] = 0 AND [ReviewStatus] = 1 ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int article_id = Int32.Parse(reader.GetValue(0).ToString());
+            var article_text_id = reader.GetValue(1);
+            var article_by = reader.GetValue(2);
+            var article_category = reader.GetValue(3);
+            var article_date = reader.GetValue(4);
+            var article_headline = reader.GetValue(5);
+            var headline_img = reader.GetValue(6);
+            var headline_img_desc = reader.GetValue(7);
+            var article_body = reader.GetValue(8);
+            var tags = reader.GetValue(9);
+
+                <a class="oflow-hidden pos-relative mb-20 dplay-block" href="~/@AppHelpers.GetArticleCategory(article_id)/News/@AppHelpers.ReturnArticleData((article_id), "ArticleTextIdentifier").ToString()">
+                    <div class="wh-100x abs-tlr"><img src="~/images/articles/@AppHelpers.GetArticleCategory(article_id).ToString()/@AppHelpers.ReturnArticleData(article_id, "ArticleHeadlineImage").ToString()" alt="@AppHelpers.ReturnArticleData(article_id, "HeadlineImageDescription").ToString()"></div>
+                    <div class="ml-120 min-h-100x">
+                        <h5><b>@FormatLongText(article_headline.ToString(), 50)</b></h5>
+                        <h6 class="color-lite-black pt-10">by <span class="color-black"><b>@GetArticleBy(article_id).ToString(),</b></span> @AppHelpers.FormatArticleDate(article_date.ToString()).ToString()</h6>
+                    </div>
+                </a><!-- oflow-hidden -->
+        }
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+            <h5 class="text-info">More news to come soon</h5>
+    }
+    reader.Close();
+}
+}
+
+@helper GetRecentCategoryNews(int total, int category)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[ArticleTextIdentifier] ,[ArticleBy] ,[ArticleCategory] ,[ArticleDate] ,[ArticleHeadline]
+    ,[ArticleHeadlineImage] ,[HeadlineImageDescription] ,[ArticleBody] ,[DeleteStatus] ,[Tags] FROM [NewsArticles] WHERE [ArticleCategory] = @category  ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    command.Parameters.AddWithValue("@category", category);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int article_id = Int32.Parse(reader.GetValue(0).ToString());
+            var article_text_id = reader.GetValue(1);
+            var article_by = reader.GetValue(2);
+            var article_category = reader.GetValue(3);
+            var article_date = reader.GetValue(4);
+            var article_headline = reader.GetValue(5);
+            var headline_img = reader.GetValue(6);
+            var headline_img_desc = reader.GetValue(7);
+            var article_body = reader.GetValue(8);
+            var tags = reader.GetValue(9);
+
+            <div class="col-sm-6 zoom-xm">
+                <a href="~/@AppHelpers.GetArticleCategory(article_id)/News/@AppHelpers.ReturnArticleData((article_id), "ArticleTextIdentifier").ToString()">
+                    <img src="~/images/articles/@AppHelpers.GetArticleCategory(article_id).ToString()/@AppHelpers.ReturnArticleData(article_id, "ArticleHeadlineImage").ToString()" alt="@AppHelpers.ReturnArticleData(article_id, "HeadlineImageDescription").ToString()">
+                    <h4 class="pt-20">
+                        <b>@article_headline</b>
+                    </h4>
+                    <ul class="list-li-mr-20 pt-10 mb-30">
+                        <li class="color-lite-black">
+                            by <span href="#" class="color-black"><b>@GetArticleBy(article_id).ToString(),</b></span>
+                            @AppHelpers.FormatArticleDate(article_date.ToString()).ToString()
+                        </li>
+                        <li><i class="fas fa-eye color-primary mr-5"></i>@AppHelpers.GetTheTotalPageViews(article_id.ToString()).ToString()</li>
+                        <li><i class="fas fa-comments color-primary mr-5"></i>@AppHelpers.GetTheTotalComments(article_id.ToString()).ToString()</li>
+                    </ul>
+                </a> 
+            </div><!-- col-sm-6 -->
+
+        }
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+        <h5 class="text-info">More news to come soon</h5>
+    }
+    reader.Close();
+}
+}
+
+
+@helper GetRecentPopularPost(int total)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[ArticleTextIdentifier] ,[ArticleBy] ,[ArticleCategory] ,[ArticleDate] ,[ArticleHeadline]
+        ,[ArticleHeadlineImage] ,[HeadlineImageDescription] ,[ArticleBody] ,[DeleteStatus] ,[Tags] FROM [NewsArticles] WHERE [DeleteStatus] = 0 AND [ReviewStatus] = 1  ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int article_id = Int32.Parse(reader.GetValue(0).ToString());
+            var article_text_id = reader.GetValue(1);
+            var article_by = reader.GetValue(2);
+            var article_category = reader.GetValue(3);
+            var article_date = reader.GetValue(4);
+            var article_headline = reader.GetValue(5);
+            var headline_img = reader.GetValue(6);
+            var headline_img_desc = reader.GetValue(7);
+            var article_body = reader.GetValue(8);
+            var tags = reader.GetValue(9);
+
+                <a class="oflow-hidden pos-relative mb-20 dplay-block" href="~/@AppHelpers.GetArticleCategory(article_id)/News/@AppHelpers.ReturnArticleData((article_id), "ArticleTextIdentifier").ToString()">
+                    <div class="wh-100x abs-tlr"><img src="~/images/articles/@AppHelpers.GetArticleCategory(article_id).ToString()/@AppHelpers.ReturnArticleData(article_id, "ArticleHeadlineImage").ToString()" alt="@AppHelpers.ReturnArticleData(article_id, "HeadlineImageDescription").ToString()"></div>
+                    <div class="ml-120 min-h-100x">
+                        <h5><b>@FormatLongText(article_headline.ToString(), 50)</b></h5>
+                        <h6 class="color-lite-black pt-10">by <span class="color-black"><b>@GetArticleBy(article_id).ToString(),</b></span> @AppHelpers.FormatArticleDate(article_date.ToString()).ToString()</h6>
+                    </div>
+                </a><!-- oflow-hidden -->
+        }
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+            <h5 class="text-info">More news to come soon</h5>
+    }
+    reader.Close();
+}
+}
+
+@helper GetFooterPost(int total, string type)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[ArticleTextIdentifier] ,[ArticleBy] ,[ArticleCategory] ,[ArticleDate] ,[ArticleHeadline]
+        ,[ArticleHeadlineImage] ,[HeadlineImageDescription] ,[ArticleBody] ,[DeleteStatus] ,[Tags] FROM [NewsArticles] ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+        int count = 0;
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int article_id = Int32.Parse(reader.GetValue(0).ToString());
+            var article_text_id = reader.GetValue(1);
+            var article_by = reader.GetValue(2);
+            var article_category = reader.GetValue(3);
+            var article_date = reader.GetValue(4);
+            var article_headline = reader.GetValue(5);
+            var headline_img = reader.GetValue(6);
+            var headline_img_desc = reader.GetValue(7);
+            var article_body = reader.GetValue(8);
+            var tags = reader.GetValue(9);
+
+                <div class="mb-20">
+                    <a class="color-white" href="#"><b>@FormatLongText(article_headline.ToString(), 50)</b></a>
+                    <h6 class="mt-10">@AppHelpers.FormatArticleDate(article_date.ToString()).ToString()</h6>
+                </div>
+            if (count == 0)
+            {
+                    <div class="brdr-ash-1 opacty-2 mr-30"></div>
+            }
+            count++;
+        }
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+        <h5 class="text-info">More news to come soon</h5>
+    }
+    reader.Close();
+}
+}
+
+
+
+@helper GetRecentPopularAdverts(int total)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+DateTime todays_date = DateTime.Now;
+
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[AdvertTextIdentifier] ,[AdvertBy] ,[AdvertCategory] ,[AdvertDate] ,[AdvertHeadline]
+        ,[AdvertImage] ,[AdvertBody] ,[DeleteStatus] ,[AdvertExpiryDate] FROM [Adverts] WHERE [DeleteStatus] = 0 
+        AND [AdvertExpiryDate] >= Convert(datetime, '" + todays_date + "') ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int advert_id = Int32.Parse(reader.GetValue(0).ToString());
+            var advert_text_id = reader.GetValue(1);
+            var advert_by = reader.GetValue(2);
+            var advert_category = reader.GetValue(3);
+            var advert_date = reader.GetValue(4);
+            var advert_headline = reader.GetValue(5);
+            var advert_img = reader.GetValue(6);
+            var advert_body = reader.GetValue(7);
+            var expiry_date = reader.GetValue(8);
+                var text = @AppHelpers.FormatLongText(advert_headline.ToString(), 10);
+                <a class="oflow-hidden pos-relative mb-20 dplay-block" href="#">
+                    <div class="wh-100x abs-tlr"><img src="https://via.placeholder.com/150?text=@text"  alt="@advert_headline.ToString()"></div>
+                    <div class="ml-120 min-h-100x">
+                        <h5><b>@FormatLongText(advert_headline.ToString(), 50)</b></h5>
+                        <h6 class="color-lite-black pt-10">by <span class="color-black"><b>@GetArticleBy(advert_id).ToString(),</b></span> @AppHelpers.FormatArticleDate(advert_date.ToString()).ToString()</h6>
+                    </div>
+                </a><!-- oflow-hidden -->
+        }
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+        <h5 class="text-info">More adverts to come soon</h5>
+    }
+    reader.Close();
+}
+}
+
+
+
+
+
+@helper FormatArticleTags(string tag_text)
+{
+string[] tag_values = tag_text.Split(',');
+for (int i = 0; i < tag_values.Length; i++)
+{
+    tag_values[i] = tag_values[i].Trim();
+        <li><a href="~/Home/Tags/?tag=@tag_values[i]">@tag_values[i]</a></li>
+}
+}
+
+
+@helper GetSimilarNewsArticles(int total, string tag_text, int category)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[ArticleTextIdentifier] ,[ArticleBy] ,[ArticleCategory] ,[ArticleDate] ,[ArticleHeadline]
+    ,[ArticleHeadlineImage] ,[HeadlineImageDescription] ,[ArticleBody] ,[DeleteStatus] ,[Tags] FROM [NewsArticles] WHERE [ArticleCategory] = @category ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    command.Parameters.AddWithValue("@category", category);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int article_id = Int32.Parse(reader.GetValue(0).ToString());
+            var article_text_id = reader.GetValue(1);
+            var article_by = reader.GetValue(2);
+            var article_category = reader.GetValue(3);
+            var article_date = reader.GetValue(4);
+            var article_headline = reader.GetValue(5);
+            var headline_img = reader.GetValue(6);
+            var headline_img_desc = reader.GetValue(7);
+            var article_body = reader.GetValue(8);
+            var tags = reader.GetValue(9);
+
+                <div class="col-sm-6">
+                    <img src="~/images/articles/@AppHelpers.GetArticleCategory(article_id).ToString()/@AppHelpers.ReturnArticleData(article_id, "ArticleHeadlineImage").ToString()" alt="@AppHelpers.ReturnArticleData(article_id, "HeadlineImageDescription").ToString()">
+                    <h4 class="pt-20">
+                        <a href="~/@AppHelpers.GetArticleCategory(article_id)/News/@AppHelpers.ReturnArticleData((article_id), "ArticleTextIdentifier").ToString()">
+                            <b>@article_headline</b>
+                        </a>
+                    </h4>
+                    <ul class="list-li-mr-20 pt-10 mb-30">
+                        <li class="color-lite-black">
+                            by <a href="#" class="color-black"><b>@GetArticleBy(article_id).ToString(),</b></a>
+                            @AppHelpers.FormatArticleDate(article_date.ToString()).ToString()
+                        </li>
+
+                        <li><i class="fas fa-eye color-primary mr-5 font-12 "></i>@AppHelpers.GetTheTotalPageViews(article_id.ToString()).ToString()</li>
+                        <li><i class="fas fa-comments color-primary mr-5 font-12 "></i>@AppHelpers.GetTheTotalComments(article_id.ToString()).ToString()</li>
+                    </ul>
+                </div><!-- col-sm-6 -->
+        }
+    }
+    else
+    {
+
+    }
+    reader.Close();
+}
+}
+
+<!-- Get Total Article Comments -->
+@helper GetTotalArticleComments(int article_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT COUNT(*) FROM [ArticleComments] WHERE [ArticleID] = @article_id;";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Parameters.AddWithValue("@article_id", article_id);
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+
+
+@helper GetArticleComments(int article_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT [ID] ,[ArticleID] ,[Name] ,[UserEmail] ,[IsReply] ,[ReplyCommentID] ,[CommentText] ,[UniqueCommentID] ,[CommentDate]
+                       FROM [ArticleComments] WHERE [ArticleID] = @article_id AND ([ReplyCommentID] IS NULL OR [ReplyCommentID] = '0')";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    command.Parameters.AddWithValue("@article_id", article_id);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int comment_id = Int32.Parse(reader.GetValue(0).ToString());
+            var id_of_article = reader.GetValue(1);
+            var commenter_name = reader.GetValue(2);
+            var user_email = reader.GetValue(3);
+            var is_reply = reader.GetValue(4);
+            var reply_comment_id = reader.GetValue(5);
+            var comment_text = reader.GetValue(6);
+            var unique_comment_id = reader.GetValue(7);
+            var comment_date = reader.GetValue(8);
+
+            var directory_name = AppHelpers.ReturnTableData("Email", user_email.ToString(), "Accounts", "DirectoryName");
+            var profile_pic = AppHelpers.ReturnTableData("UserEmail", user_email.ToString(), "ProfilePictures", "ProfilePicture");
+            var default_profile_pic = "https://www.gravatar.com/avatar/" + RandomInt(Int32.Parse(GenerateRandomNumber(3, 10).ToString())) + "?s=32&d=identicon&r=PG";
+
+                <div class="sided-70 mb-40">
+
+                    <div class="s-left rounded">
+                        @{
+                            if (directory_name == null || profile_pic == null)
+                            {
+                                <img src="@default_profile_pic" alt="user">
+                            }
+                            else
+                            {
+                                string new_directory_name = directory_name.ToString();
+                                string new_profile_pic = profile_pic.ToString();
+                                if (new_directory_name == "" || new_profile_pic == "")
+                                {
+                                    <img src="@default_profile_pic" alt="user">
+                                }
+                                else
+                                {
+                                    <img src="~/images/accounts/@new_directory_name/@new_profile_pic" alt="@new_directory_name">
+                                }
+
+                            }
+                        }
+                    </div><!-- s-left -->
+
+                    <div class="s-right ml-100 ml-xs-85">
+                        <h5>
+                            @{
+                                if (commenter_name != null)
+                                {
+                                    <b>@commenter_name</b>
+                                }
+                                else if (user_email != null)
+                                {
+                                    <b>@GetUsernameOnly(user_email.ToString())</b>
+                                }
+                                else
+                                {
+                                    <b>Anonymous</b>
+                                }
+                            } 
+                                 
+                            <span class="font-8 color-ash">@AppHelpers.FormatArticleDate(comment_date.ToString()).ToString()</span>
+                        </h5>
+                        <p class="mtb-15">
+                            @comment_text
+                        </p>
+                        <div class="sr-only">
+                            <a class="btn-brdr-grey btn-b-sm plr-15 mr-10 mt-5" href="#"><b>LIKE</b></a>
+                            <a class="btn-brdr-grey btn-b-sm plr-15 mt-5" href="#"><b>REPLY</b></a>
+                        </div>
+                    </div><!-- s-right -->
+
+                </div><!-- sided-70 -->
+                <!-- If Reply Exist Exist, Get Replies -->
+                                if (Int32.Parse(CommentReplyExists(comment_id).ToString()) > 0)
+                                {
+                                    var head_text = "View reply";
+                                    if (Int32.Parse(CommentReplyExists(comment_id).ToString()) > 1)
+                                    {
+                                        head_text = "View " + CommentReplyExists(comment_id).ToString() + " replies";
+                                    }
+                        <div class="container">
+                            <a href="#@unique_comment_id.ToString()" class="" data-toggle="collapse">@head_text</a>
+                            <div id="@unique_comment_id.ToString()" class="collapse">
+                                @AppHelpers.GetCommentReplies(comment_id)
+                            </div>
+                        </div>
+
+                                }
+                <hr/>
+                                        }
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                    reader.Close();
+                                }
+}
+
+
+@helper GetCommentReplies(int comment_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT [ID] ,[ArticleID] ,[UserEmail] ,[IsReply] ,[ReplyCommentID] ,[CommentText] ,[UniqueCommentID] ,[CommentDate]
+                       FROM [ArticleComments] WHERE  [ReplyCommentID] = @comment_id";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    command.Parameters.AddWithValue("@comment_id", comment_id);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int id = Int32.Parse(reader.GetValue(0).ToString());
+            var id_of_article = reader.GetValue(1);
+            var user_email = reader.GetValue(2);
+            var is_reply = reader.GetValue(3);
+            var reply_comment_id = reader.GetValue(4);
+            var comment_text = reader.GetValue(5);
+            var unique_comment_id = reader.GetValue(6);
+            var comment_date = reader.GetValue(7);
+
+            var directory_name = AppHelpers.ReturnTableData("Email", user_email.ToString(), "Accounts", "DirectoryName");
+            var profile_pic = AppHelpers.ReturnTableData("UserEmail", user_email.ToString(), "ProfilePictures", "ProfilePicture");
+            var default_profile_pic = "https://www.gravatar.com/avatar/" + RandomInt(Int32.Parse(GenerateRandomNumber(3, 10).ToString())) + "?s=32&d=identicon&r=PG";
+
+                <div class="sided-70 ml-100 ml-xs-20 mb-40">
+
+                    <div class="s-left rounded">
+                        @{
+                            if (directory_name == null || profile_pic == null)
+                            {
+                                <img src="@default_profile_pic" alt="user">
+                            }
+                            else
+                            {
+                                string new_directory_name = directory_name.ToString();
+                                string new_profile_pic = profile_pic.ToString();
+                                if (new_directory_name == "" || new_profile_pic == "")
+                                {
+                                    <img src="@default_profile_pic" alt="user">
+                                }
+                                else
+                                {
+                                    <img src="~/images/accounts/@new_directory_name/@new_profile_pic" alt="@new_directory_name">
+                                }
+                            }
+                        }
+                    </div><!-- s-left -->
+
+                    <div class="s-right ml-100 ml-xs-85">
+                        <h5><b>@user_email, </b> <span class="font-8 color-ash">@AppHelpers.FormatArticleDate(comment_date.ToString()).ToString()</span></h5>
+                        <p class="mtb-10">
+                            @comment_text
+                        </p>
+                        <div class="sr-only">
+                            <a class="btn-brdr-grey btn-b-sm plr-15 mr-10 mt-5" href="#"><b>LIKE</b></a>
+                            <a class="btn-brdr-grey btn-b-sm plr-15 mt-5" href="#"><b>REPLY</b></a>
+                        </div>
+                    </div><!-- s-right -->
+
+                </div><!-- sided-70 -->
+                                    }
+                                }
+                                else
+                                {
+
+                                }
+                                reader.Close();
+                            }
+}
+
+<!-- Check if Reply Exist -->
+@helper CommentReplyExists(int comment_id)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    cmd.CommandText = "SELECT COUNT(*) FROM [ArticleComments] WHERE [ReplyCommentID] = @comment_id;";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Parameters.AddWithValue("@comment_id", comment_id);
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+
+<!-- Get Random Youtube Video -->
+@helper GetRandomYoutubeVideo()
+{
+    //string[] video_ids = { "g7lYYpxs2K8", "EN5bK8qaAQA", "AMizk1ZNHkc", "ZncfLgG7kr4", "2F2HLsZdW_c", "kApfkZEgn8o", "sA9nJq9h3zc", "EmkFMccV0lg", "H0hUVBdoJ50", "LRpXlo0FZ3k", "Kb6jgTaWTNU", "Tc1UU0P9Rbc", "EN5bK8qaAQA", "tT0Mpvl96Ms", "cdrVE_UCDUE" };
+    string[] video_ids = GetAdvertItems(50, "YouTubeVideo").ToString().Split(',');
+    var video_link = video_ids[new Random().Next(0, video_ids.Length)];
+    <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="//www.youtube.com/embed/@video_link?rel=0" allowfullscreen></iframe>
+    </div>
+}
+
+<!-- Get Random Ad Gif -->
+@helper GetRandomAdGif()
+{
+    //string[] gif_ids = { "lightning-336x280.gif", "rw_600.gif", "CondusivBnnrs.gif", "email-promo.gif", "bonobos2.gif", "2f64657363322e676966.gif", "MDgiphy.gif", "Coati-size_restricted.gif", "78493-lightbulb.gif" };
+    string[] gif_ids = GetAdvertItems(10, "Image").ToString().Split(',');
+
+    var gif_link = gif_ids[new Random().Next(0, gif_ids.Length)];
+    <img src="~/images/ad_gifs/@gif_link" class="rounded" alt="gif advert">
+}
+
+@helper GetAdvertItems(int total, string type)
+{
+var total_number = total.ToString();
+total_number = System.Security.SecurityElement.Escape(total_number);
+DateTime todays_date = DateTime.Now;
+
+//List<string> advert_arrays = new List<string>();
+string csv_list = "";
+
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT TOP " + total_number + @" [ID] ,[AdvertType] ,[AdvertText] ,[LinkType] ,[Link] ,[DateAdded],[ExpiryDate] FROM [SideAdverts] WHERE 
+                 [AdvertType] = @type AND [ExpiryDate] >= Convert(datetime, '" + todays_date + "') ORDER BY [ID] DESC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    command.Parameters.AddWithValue("@type", type);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int advert_id = Int32.Parse(reader.GetValue(0).ToString());
+            var advert_type = reader.GetValue(1);
+            var advert_text = reader.GetValue(2);
+            var link_type = reader.GetValue(3);
+            var link = reader.GetValue(4);
+            var date_added = reader.GetValue(5);
+            var expiry_date = reader.GetValue(6);
+
+            //advert_arrays.Add(link.ToString());
+            csv_list = csv_list + link + ",";
+
+        }
+        // convert it back to an array 
+    }
+    reader.Close();
+}
+
+//string[] return_array = advert_arrays.ToArray();
+csv_list = csv_list.TrimEnd(',');
+@csv_list;
+}
+
+
+
+
+<!-- Get Local Weather -->
+@helper GetLocalWeather()
+{
+    <!--https://weatherwidget.io/-->
+    <a class="weatherwidget-io" href="https://forecast7.com/en/13d45n16d58/banjul/" data-label_1="BANJUL" data-label_2="WEATHER" data-theme="original">BANJUL WEATHER</a>
+    <script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+    </script>
+}
+
+<!-- Get Forex Rates -->
+@helper GetForexRates()
+{
+    <div style="height:25em;">
+        <iframe src="https://uk.widgets.investing.com/live-currency-cross-rates?theme=darkTheme&pairs=1,2,4,7,6,1639,1754,2131" width="100%" height="100%" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe><div class="poweredBy" style="font-family: Arial, Helvetica, sans-serif;">Powered by <a href="https://uk.investing.com?utm_source=WMT&amp;utm_medium=referral&amp;utm_campaign=LIVE_CURRENCY_X_RATES&amp;utm_content=Footer%20Link" target="_blank" rel="nofollow">Investing.com</a></div>
+    </div>
+}
+
+<!-- Article Comment Form -->
+@helper GetArticleCommentForm()
+{
+    <input type="text" placeholder="Your Name*:">
+    <input type="text" placeholder="Your Email*:">
+    <input type="text" placeholder="Your Phone*:">
+    <textarea class="ptb-10" placeholder="Your Comment"></textarea>
+    <button class="btn-fill-primary plr-30" rows="4" cols="50" type="submit"><b>LEAVE A COMMENT</b></button>
+}
+<!-- Article Comment Form (Taking ID as parameter) -->
+@helper GetArticleCommentForm(int article_id)
+{
+var ReturnUrl = "Index";
+if (Session["LastUrl"] != null)
+{
+    ReturnUrl = Session["LastUrl"].ToString();
+}
+
+if (Session["sessionEmail"] == null)
+{
+        <label for="CommenterName">Name</label>
+        <input type="text" name="CommenterName" id="CommenterName" required="required" placeholder="Your Name*" minlength="3" pattern=".{3,}" title="3 or more characters">
+}
+
+    <label for="CommentText">Comment</label>
+    <textarea class="ptb-10" placeholder="Your Comment *" name="CommentText" id="CommentText" required="required" minlength="2" pattern=".{2,}" title="2 or more characters"></textarea>
+    <input type="hidden" name="ArticleID" id="ArticleID" value="@article_id">
+    <input type="hidden" name="IsReply" id="IsReply" value="0">
+    <input type="hidden" name="ReturnUrl" value="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    @*
+        if (Session["sessionEmail"] == null)
+        {
+            <p class="text-danger">
+                <a href="#loginModal" data-toggle="modal" data-target="#loginModal" class="btn btn-danger">
+                    Login to make comment <i class="fas fa-sign-in-alt"></i>
+                </a>
+            </p>
+        }
+        else
+        {
+            <button class="btn-fill-primary plr-30" rows="4" cols="50" type="submit"><b>POST COMMENT</b></button>
+        }
+    *@
+    <button class="btn-fill-primary plr-30" rows="4" cols="50" type="submit"><b>POST COMMENT</b></button>
+    <hr/>
+    <h4>Facebook Comments</h4>
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&autoLogAppEvents=1&version=v3.2&appId=2015587022070357"></script>
+    <div class="fb-comments" data-href="https://developers.facebook.com/docs/plugins/comments#configurator" data-numposts="5"></div>
+
+    @*<script>
+        $("#CommenterName,#CommentText").keypress(function (evt) {
+
+            var keycode = evt.charCode || evt.keyCode;
+            if (keycode == 32) {
+                return false;
+            }
+        });
+    </script>*@
+}
+
+<!-- Subscription Form -->
+@helper GetSubscriptionForm()
+{
+    <h4 class="p-title"><b>NEWSLETTER</b></h4>
+    <p class="mb-20">
+        Subscribe to our newsletter to get notification about new updates,
+        information, discount, etc..
+    </p>
+    <div class="nwsltr-primary-1">
+        <input type="text" name="SubscriberEmail" id="SubscriberEmail" placeholder="Your email" />
+        <input type="hidden" name="ReturnUrl" value="@HttpContext.Current.Request.Url.AbsoluteUri" />
+        <button type="submit" name="SaveSubcription"><i class="fas fa-paper-plane text-white"></i></button>
+    </div>
+}
+
+
+@helper GetCategoriesDropdown()
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+string commandText = @"SELECT [ID] ,[CategoryName] ,[CategoryText] FROM [Categories] ORDER BY [CategoryName] ASC";
+using (var connection = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlCommand command = new System.Data.SqlClient.SqlCommand(commandText, connection);
+    connection.Open();
+
+    System.Data.SqlClient.SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+
+        while (reader.Read())
+        {
+            //Console.WriteLine("{0}\t{1}", reader.GetInt32(0),
+            //    reader.GetString(1));
+            //https://stackoverflow.com/questions/8370927/how-do-i-loop-through-rows-with-a-data-reader-in-c
+            int category_id = Int32.Parse(reader.GetValue(0).ToString());
+            var category_name = reader.GetValue(1);
+            var category_text = reader.GetValue(2);
+            <li><a href="~/@category_name">@category_text.ToString().ToUpper()</a></li>
+        }
+            <li><a href="~/Categories">ALL CATEGORIES</a></li>
+    }
+    else
+    {
+        //Console.WriteLine("No rows found.");
+            <li class="text-info">No categories available</li>
+    }
+    reader.Close();
+}
+}
+
+<!-- Get LoggedIn Name -->
+@helper GetLoggedInName()
+{
+string FullName = "N/A";
+if (Session["sessionFullName"] != null)
+{
+    FullName = Session["sessionFullName"].ToString();
+    if (FullName == "" && Session["sessionEmail"] != null)
+    {
+        FullName = Session["sessionEmail"].ToString();
+    }
+    else if (FullName == "" && Session["sessionEmail"] == null)
+    {
+        FullName = "N/A";
+    }
+}
+    @FullName
+}
+
+<!-- Get Host Name -->
+@helper GetHostName()
+{
+    string HostName = "https://localhost:44375/";
+    @HostName
+}
+
+<!-- Get LoggedIn Profile Pic -->
+@helper GetLoggedInProfilePic()
+{
+string ProfilePic = null;
+if (Session["sessionProfilePic"] != null)
+{
+    ProfilePic = Session["sessionProfilePic"].ToString();
+    if (Session["sessionProfilePic"].ToString().Contains("default") || Session["sessionProfilePic"].ToString() == "")
+    {
+        ProfilePic = "default/default.jpg";
+    }
+}
+    @ProfilePic
+}
+
+@helper CheckIfImageExistc(string url) { 
+    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+    request.Method = "HEAD";
+
+    var returnValue = "False";
+    try
+    {
+        request.GetResponse();
+        returnValue = "True";
+    }
+    catch(Exception ex)
+    {
+        returnValue = "False";
+    }
+    @returnValue;
+}
+
+<!-- Random Number Generator-->
+@helper  GenerateRandomNumber(int min, int max)
+{
+    Random random = new Random();
+
+var ran_num = random.Next(min, max);
+@ran_num
+}
+
+<!--LINQ Random Number Generator-->
+@helper   RandomInt(int length)
+{
+    Random random = new Random();
+    const string chars = "0123456789";
+    var ran_num = new string(Enumerable.Repeat(chars, length)
+    .Select(s => s[random.Next(s.Length)]).ToArray());
+
+    @ran_num
+}
+
+
+<!--///////////////////////////////ADMIN HELPERS///////////////////////////////-->
+<!-- Get total post of logged in admin -->
+@helper GetTotalAdminPosts(string admin_email)
+{
+    var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+    var returnValue = "0";
+    using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+    {
+        System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+        System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+        Object dbValue;
+
+        cmd.CommandText = "SELECT COUNT(*) FROM [NewsArticles] WHERE [ArticleBy] = @article_by;";
+        cmd.CommandType = System.Data.CommandType.Text;
+        cmd.Parameters.AddWithValue("@article_by", admin_email);
+        cmd.Connection = sqlConnection;
+
+        sqlConnection.Open();
+
+        dbValue = cmd.ExecuteScalar();
+
+        sqlConnection.Close();
+        if (dbValue != null)
+        {
+            returnValue = dbValue.ToString();
+        }
+    }
+    @returnValue;
+}
+
+<!-- Get total post of logged in admin //Not in use-->
+@helper GetAdminMonthTotal(string article_id, int month, int year)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    //cmd.CommandText = "SELECT COUNT(*) FROM [PageVisits] WHERE [ArticleBy] = @article_by;";
+    cmd.CommandText = @"SELECT SUM(SumReceived) AS Total
+                                        FROM [PageVisits]
+                                        WHERE VisitDate IS NOT NULL
+                                        AND [ArticleID] = @article_id
+                                        AND Year(convert(date,VisitDate,103)) = @year
+                                        AND Month(convert(date,VisitDate,103)) = @month";
+
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Parameters.AddWithValue("@article_id", article_id);
+    cmd.Parameters.AddWithValue("@year", year);
+    cmd.Parameters.AddWithValue("@month", month);
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+
+<!-- Get total post of logged in admin //Not in use-->
+@helper GetTotalAdminPostsViews(String[] articles_ids, int month, int year)
+{
+        var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+        int total_count = 0;
+        using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+        {
+            foreach (var item in articles_ids)
+            {
+                total_count = total_count + Int32.Parse(GetAdminMonthTotal(item.ToString(), month, year).ToString());
+            }
+        }
+    @total_count;
+}
+<!-- Get total alerts -->
+@helper GetTotalAlerts()
+{
+    int total = 0;
+    int ttl_pen_rew = Int32.Parse(GetTotalArticlesPendingReview().ToString());
+    int ttl_pen_rew_ac = Int32.Parse(GetTotalArticlesPendingReviewAction(Session["sessionEmail"].ToString()).ToString());
+
+    total = total + ttl_pen_rew + ttl_pen_rew_ac;
+    @total;
+}
+
+<!-- Get total pending reviews -->
+@helper GetTotalArticlesPendingReview()
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+
+    if (Session["sessionSystemAdmin"] != null || Session["sessionEditor"] != null)
+    {
+        using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+        {
+            System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+            System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+            Object dbValue;
+
+            string status = "0";
+            cmd.CommandText = "SELECT COUNT(*) FROM [NewsArticles] WHERE [ReviewStatus] = @status;";
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.Parameters.AddWithValue("@status", status);
+            cmd.Connection = sqlConnection;
+
+            sqlConnection.Open();
+
+            dbValue = cmd.ExecuteScalar();
+
+            sqlConnection.Close();
+            if (dbValue != null)
+            {
+                returnValue = dbValue.ToString();
+            }
+        }
+    }
+
+    @returnValue;
+}
+
+
+<!-- Get total Pending Review Action -->
+@helper GetTotalArticlesPendingReviewAction(string email)
+{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    string status = "0";
+    cmd.CommandText = "SELECT COUNT(*) FROM [PostReviews] WHERE [AddressedBy] = @email AND [ReviewStatus] = @status;";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Parameters.AddWithValue("@email", email);
+    cmd.Parameters.AddWithValue("@status", status);
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}
+
+<!-- Get Role ID -->
+@helper GetRoleID(string role_name)
+{
+    var returnValue = "";
+    var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+    using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+    {
+        System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+        System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+        Object dbValue;
+
+        cmd.CommandText = "SELECT [ID] FROM [Roles] WHERE [RoleName] = @role_name";
+        cmd.Parameters.AddWithValue("@role_name", role_name);
+        cmd.CommandType = System.Data.CommandType.Text;
+        cmd.Connection = sqlConnection;
+
+        sqlConnection.Open();
+
+        dbValue = cmd.ExecuteScalar();
+
+        sqlConnection.Close();
+
+        if (dbValue != null)
+        {
+            returnValue = dbValue.ToString();
+        }
+    }
+    @returnValue;
+}
+
+<!-- Get Username From Email -->
+@helper GetUsernameOnly(string email)
+{
+    string username = email;
+    if (!string.IsNullOrEmpty(email))
+    {
+        String[] email_parts = email.Split(new[] { '@' });
+        username = email_parts[0]; 
+    }
+@username
+}
+
+
+<!-- SocialShareIcons  -->
+@helper SocialShareIcons(string link)
+{
+        <li class="mr-10 ml-0 font-weight-bold text-danger">Share</li>
+        <li><a href="@link" class="a2a_button_facebook"><i class="fab fa-facebook"></i></a></li>
+        <li><a href="@link" class="a2a_button_twitter"><i class="fab fa-twitter"></i></a></li>
+        <li><a href="@link" class="a2a_button_whatsapp"><i class="fab fa-whatsapp"></i></a></li>
+        <li><a href="@link" class="a2a_button_email"><i class="fas fa-envelope"></i></li>
+
+    <script async src="~/Scripts/add-to-any.js"></script>
+}
+
+
+<!-- //Count page visit -->
+@*@helper CountPageVisit()*@
+@*{
+var connString = System.Configuration.ConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString;
+var returnValue = "0";
+
+using (var conn = new System.Data.SqlClient.SqlConnection(connString))
+{
+    System.Data.SqlClient.SqlConnection sqlConnection = new System.Data.SqlClient.SqlConnection(connString);
+    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand();
+    Object dbValue;
+
+    string status = "0";
+    var url_id = Url.RequestContext.RouteData.Values["id"];
+
+    cmd.CommandText = @"INSERT INTO PageVisits] VALUES ([UserEmail] ,[IpAddress] ,[Country] ,[Browser] ,[Device] ,[VisitDate] ,[DeviceDetails] 
+                        VALUES ('', '', '', '', '', '', '')";
+    cmd.CommandType = System.Data.CommandType.Text;
+    cmd.Parameters.AddWithValue("@status", status);
+    cmd.Connection = sqlConnection;
+
+    sqlConnection.Open();
+
+    dbValue = cmd.ExecuteScalar();
+
+    sqlConnection.Close();
+    if (dbValue != null)
+    {
+        returnValue = dbValue.ToString();
+    }
+}
+    @returnValue;
+}*@

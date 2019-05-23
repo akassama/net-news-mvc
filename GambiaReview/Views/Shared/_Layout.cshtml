@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Gambia Review</title>
+    <link href="~/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Content/styles.css" rel="stylesheet">
+    <link href="~/Content/ionicons.css" rel="stylesheet">
+    <link href="~/Content/custom.css" rel="stylesheet">
+    <link href="~/fonts/fontawesome-free-5.5.0/css/all.min.css" rel="stylesheet">
+
+
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/jquery/jquery.min.js"></script>
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
+
+
+    @{
+        //Set Last URL
+        Session["LastUrl"] = HttpContext.Current.Request.Url.AbsoluteUri;
+
+
+        //if record added/modified scroll to record on load
+        if (TempData["SubsAlertDiv"] != null)
+        {
+            var scroll_id = TempData["SubsAlertDiv"];
+            <script type="text/javascript">
+                setTimeout(function () {
+			        $(document).ready(function () {
+				        // Handler for .ready() called.
+				        //$("#@scroll_id").addClass("bg-highlight-row");
+				        $('html, body').animate({
+                    scrollTop: $('#@scroll_id').offset().top - 100
+
+                        }, 'slow');
+                });
+            });
+            </script>
+        }
+
+        if (TempData["displayModal"] != null)
+        {
+            //string error; error = (TempData["ProcessLoginFailureMessage"] != null) ? TempData["ProcessLoginFailureMessage"].ToString() : "";
+
+            var modal = TempData["displayModal"].ToString();
+            <script type="text/javascript">
+            setTimeout(function () {
+	            $(document).ready(function () {
+	                $(@modal).modal();
+                });
+            });
+            </script>
+        }
+
+        //Search redirect
+        var search_q = Request.QueryString["search"];
+        if (!string.IsNullOrEmpty(search_q))
+        {
+
+            System.Text.RegularExpressions.Regex rgx = new System.Text.RegularExpressions.Regex("[^a-zA-Z0-9 -]");
+
+            search_q = rgx.Replace(search_q, "");
+            Response.Redirect("~/Home/Search/?q="+ search_q);
+        }
+    }
+
+
+</head>
+<body>
+    <header>
+        <div class="bg-191">
+            <div class="container">
+                <div class="oflow-hidden color-ash font-9 text-sm-center ptb-sm-5">
+
+                    <ul class="float-left float-sm-none list-a-plr-10 list-a-plr-sm-5 list-a-ptb-15 list-a-ptb-sm-10">
+                        <li><a class="pl-0 pl-sm-10" href="~/Home/About">About</a></li>
+                        <li><a href="~/Home/Advertise">Advertise</a></li>
+                        <li><a href="#">Submit Press Release</a></li>
+                        <li><a href="~/Home/Contact">Contact</a></li>
+                    </ul>
+                    <ul class="float-right float-sm-none list-a-plr-10 list-a-plr-sm-5 list-a-ptb-15 list-a-ptb-sm-5">
+                        <li><a class="pl-0 pl-sm-10" href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-google"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                        @{
+                            if (Session["sessionEmail"] != null)
+                            {
+                                <li class="left-padded">
+                                    <a href="#logoutModal" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-sign-out-alt text-danger"></i> Logout</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="left-padded">
+                                    <a href="#loginModal" data-toggle="modal" data-target="#loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                </div><!-- top-menu -->
+            </div><!-- container -->
+        </div><!-- bg-191 -->
+
+        <div class="container">
+            <a class="logo" href="~/"><img src="~/images/GambiaReviewLogo.jpg" class="rounded" alt="Logo"></a>
+            @*<a class="right-area src-btn" href="#" style="margin-top: 1.6em;">
+                <i class="active src-icn fas fa-search"></i>
+                <i class="close-icn fas fa-window-close"></i>
+            </a>
+            <div class="src-form">
+                <form>
+                    <input type="text" placeholder="Search here">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>*@
+            <!-- src-form -->
+
+            <a class="menu-nav-icon" data-menu="#main-menu" href="#"><i class="fas fa-bars"></i></a>
+
+            <ul class="main-menu" id="main-menu">
+                <li><a href="~/">HOME</a></li>
+                <li><a href="~/Gambia">GAMBIA</a></li>
+                <li class="drop-down">
+                    <a href="~/Categories">CATEGORIES<i class="fas fa-caret-down"></i></a>
+                    <ul class="drop-down-menu drop-down-inner">
+                        @AppHelpers.GetCategoriesDropdown()
+                    </ul>
+                </li>
+                <li><a href="~/Africa">AFRICA</a></li>
+                <li><a href="~/Adverts">ADVERTS</a></li>
+                <li><a href="~/Home/Contact">CONTACT US</a></li>
+                <li class="home-search">
+                    <div class="min-width-100">
+                        @using (Html.BeginForm("Search", "Home"))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true)
+                            <input type="text" id="search" name="search" placeholder="Search..">
+                        }
+                    </div>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div><!-- container -->
+    </header>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <footer class="bg-191 color-ccc">
+
+        <div class="container">
+            <div class="pt-50 pb-20 pos-relative">
+                <div class="abs-tblr pt-50 z--1 text-center">
+                    <div class="h-80 pos-relative"><img class="opacty-1 h-100 w-auto" src="~/images/map.png" alt=""></div>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-4">
+                        <div class="mb-30">
+                            <a href="~/"><img src="~/images/GambiaReviewLogo.jpg" class="rounded"></a>
+                            <p class="mtb-20 color-ccc">
+                                Gambia Review is your place to go if you want to get the latest and most accurate news about the Gambia and World at large.
+                            </p>
+                            <p class="color-ash">
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                Copyright &copy;
+                                @DateTime.Now.Year Gambia Review. All rights reserved.
+                                <br />
+                                Developer <a href="https://stackoverflow.com/users/5612132/laiman?tab=profile" class="text-info" target="_blank">
+                                    A. Kassama
+                                </a>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            </p>
+                        </div><!-- mb-30 -->
+                    </div><!-- col-md-4 -->
+
+                    <div class="col-sm-4">
+                        <div class="mb-30">
+                            <h5 class="color-primary mb-20"><b>LOCAL NEWS</b></h5>
+                            @AppHelpers.GetFooterPost(2, "MostPopular")
+                        </div><!-- mb-30 -->
+                    </div><!-- col-md-4 -->
+
+                    <div class="col-sm-4">
+                        <div class="mb-30">
+                            <h5 class="color-primary mb-20"><b>MOST POPULAR</b></h5>
+                            @AppHelpers.GetFooterPost(2, "MostPopular")
+                        </div><!-- mb-30 -->
+                    </div><!-- col-md-4 -->
+
+                </div><!-- row -->
+            </div><!-- ptb-50 -->
+
+            <div class="brdr-ash-1 opacty-2"></div>
+
+            <div class="oflow-hidden color-ash font-9 text-sm-center ptb-sm-5">
+
+                <ul class="float-left float-sm-none list-a-plr-10 list-a-plr-sm-5 list-a-ptb-15 list-a-ptb-sm-10">
+                    <li><a class="pl-0 pl-sm-10" href="#">Terms & Conditions</a></li>
+                    <li><a href="~/Home/PrivacyPolicy">Privacy policy</a></li>
+                    <li><a href="~/Home/Advertise">Jobs advertising</a></li>
+                    <li><a href="~/Home/Contact">Contact us</a></li>
+                </ul>
+                <ul class="float-right float-sm-none list-a-plr-10 list-a-plr-sm-5 list-a-ptb-15 list-a-ptb-sm-5">
+                    <li><a class="pl-0 pl-sm-10" href="#"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fab fa-google"></i></a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                </ul>
+
+            </div><!-- oflow-hidden -->
+        </div><!-- container -->
+    </footer>
+
+    <div id="form-modals">
+
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+             @using (Html.BeginForm("Login", "Home"))
+            {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true)
+
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-center">Sign in</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row">
+                                @*
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary lg-bt-width"> <small><i class="fab fa-facebook-square"></i> Sign in with Facebook</small></button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-info lg-bt-width"> <small><i class="fab fa-twitter"></i> Sign in with Twitter</small></button>
+                                    </div>
+                                    <a href="~/Home/Login"><img src="https://blog.dashlane.com/wp-content/uploads/2018/03/facebook-sign-in-button-600x225.png" class="rounded" alt="Social Icons"></a>
+                                *@
+
+                                <a href="~/Home/Login"><img src="~/images/76658_960_720.png" class="rounded" alt="Social Icons"> </a>
+                            </div>
+                            <div class="spacer"></div>
+                            <h5 class="modal-title text-center">OR</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @if (TempData["ProcessLoginFailureMessage"] != null)
+                                    {
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <strong>@TempData["ProcessLoginFailureMessage"]</strong>
+                                            <div class="spacer-small"></div>
+                                            <p>Send us a message here <a href='~/Home/Contact'>contact</a></p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email Address</label>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" aria-describedby="emailHelp" placeholder="Enter email" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input type="password" class="form-control" id="userPassword" name="userPassword" placeholder="Password" required="required">
+                            </div>
+
+                            <div class="row padded">
+                                <button type="submit" class="btn btn-success btn-block" id="SignInButton" name="SignInButton"> <small><i class="fas fa-sign-in-alt"></i> Sign in</small></button>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    @*<label class="form-check-label">
+                                            <input type="checkbox" name="RememberMe" id="RememberMe" class="form-check-input">
+                                            Remember Me?
+                                        </label>*@
+                                    <label class="form-check-label">
+                                        <a class="text-primary" data-dismiss="modal" data-toggle="modal" href="#forgotPasswordModal">Forgot password?</a>
+                                    </label>
+                                    <br /><br />
+                                </div>
+                            </div>
+                            <div class="row padded">
+                                <button type="button" class="btn btn-warning btn-block" data-dismiss="modal" data-toggle="modal" href="#registerModal">
+                                    <small><i class="fas fa-user-plus"></i> Sign up New Account</small>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+            function checkPasswordMatch() {
+                var password = $("#Password").val();
+                var confirmPassword = $("#RepeatPassword").val();
+
+                if (password != confirmPassword) {
+                    $("#divCheckPasswordMatch").html("<strong class='text-danger'>Passwords do not match!</strong>");
+                    $('#SignUpButton').attr("disabled", true);
+                }
+                else {
+                    $("#divCheckPasswordMatch").html("<strong class='text-success'>Passwords match.</strong>");
+                    $('#SignUpButton').attr("disabled", false);
+                }
+            }
+
+            $(document).ready(function () {
+                $("#RepeatPassword").keyup(checkPasswordMatch);
+            });
+        </script>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                @using (Html.BeginForm("Register", "Home"))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true)
+
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-center">Sign Up</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="spacer"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @{
+                                        if (TempData["ProcessRegisterFailureMessage"] != null)
+                                        {
+                                            <div class="alert alert-danger alert-dismissable">
+                                                <strong>@TempData["ProcessRegisterFailureMessage"]</strong>
+                                                <div class="spacer-small"></div>
+                                                <p>Send us a message here <a href='~/Home/Contact'>contact</a></p>
+                                            </div>
+                                        }
+                                        var pw_rule = "Must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters";
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Email Address</label>
+                                <input type="email" class="form-control" id="Email" name="Email" aria-describedby="emailHelp" placeholder="Enter email" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1" data-toggle="tooltip" data-placement="top" title="@pw_rule">Password</label>
+                                <input type="password" class="form-control" id="Password" name="Password" placeholder="Password" required="required">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Repeat Password</label>
+                                <input type="password" class="form-control" id="RepeatPassword" name="RepeatPassword" placeholder="Repeat Password" required="required">
+                                <!--Jquery Password Validation Message-->
+                                <span class="registrationFormAlert" id="divCheckPasswordMatch">
+                                </span>
+                                <span class="field-validation-valid" data-valmsg-for="RepeatPassword" data-valmsg-replace="true"></span>
+                            </div>
+
+                            <div class="row padded">
+                                <button type="submit" class="btn btn-success btn-block" id="SignUpButton" name="SignUpButton" disabled> <small><i class="fas fa-sign-in-alt"></i> Sign up</small></button>
+                            </div>
+                            <br />
+                            <a class="text-primary" data-dismiss="modal" data-toggle="modal" href="#loginModal">Sign in</a>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            @*<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>*@
+                        </div>
+
+                    </div>
+                    }
+            </div>
+        </div>
+
+        <!-- Logout Modal -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Logout</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="text-alchemy">Do you want to logout?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="~/Home/Logout" role="button" class="btn btn-danger">Yes</a>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function(){
+              $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </div>
+
+        <!-- Bootstrap core JavaScript -->
+        @*<script src="~/Scripts/jquery/jquery.min.js"></script>*@
+        <script src="~/Content/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="~/Scripts/tether.min.js"></script>
+        <script src="~/Scripts/scripts.js"></script>
+
+        @*@Scripts.Render("~/bundles/jquery")*@
+        @*@Scripts.Render("~/bundles/bootstrap")*@
+        @RenderSection("scripts", required: false)
+</body>
+</html>

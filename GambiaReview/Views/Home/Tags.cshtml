@@ -1,0 +1,110 @@
+﻿@model IEnumerable<GambiaReview.Models.NewsArticlesModel>
+
+@{
+    ViewBag.Title = ViewBag.Tag + " Tags results";
+}
+
+<section class="ptb-0">
+    <div class="mb-30 brdr-ash-1 opacty-5"></div>
+    <div class="container">
+        <a class="mt-10" href="~/"><i class="fas fa-home mlr-5"></i>Home<i class="fas fa-angle-right mlr-10"></i></a>
+        <a class="mt-10 color-ash" href="">Tags</a>
+    </div><!-- container -->
+</section>
+
+
+<section>
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12 col-lg-8">
+
+                <h4 class="p-title">
+                    <b>Showing tags for '<span class="text-danger">@ViewBag.Tag</span>' </b>
+                </h4>
+                @{
+                    if (ViewBag.CountTotal == 0)
+                    {
+                        <p>Sorry, there are no tags for <strong>@ViewBag.Tag</strong></p>
+                    }
+                    else
+                    {
+                    <div class="row">
+                        @foreach (var item in Model)
+                        {
+                            <div class="row results-img">
+                                <div class="col-md-4 zoom-xm">
+                                    <img src="~/images/articles/@AppHelpers.GetArticleCategory(item.ID).ToString()/@AppHelpers.ReturnArticleData(item.ID, "ArticleHeadlineImage").ToString()" alt="@AppHelpers.ReturnArticleData(item.ID, "HeadlineImageDescription").ToString()">
+                                </div>
+                                <div class="col-md-8">
+                                    <h4 class="pt-20">
+                                        <a href="~/@AppHelpers.GetArticleCategory(item.ID)/News/@AppHelpers.ReturnArticleData(item.ID, "ArticleTextIdentifier").ToString()">
+                                            <span>
+                                                @AppHelpers.FormatLongText(item.ArticleHeadline.ToString(), 150)
+                                            </span>
+                                            <br />
+                                            <small>
+                                                @{
+                                                    var stripped_body = AppHelpers.StripHTML(item.ArticleBody);
+                                                }
+                                                @AppHelpers.FormatLongText(stripped_body.ToString(), 250)
+                                            </small>
+                                        </a>
+                                    </h4>
+                                    <ul class="list-li-mr-20 pt-10 mb-30">
+                                        <li class="color-lite-black">
+                                            by <a href="#" class="color-black"><b>@AppHelpers.GetArticleBy(item.ID).ToString()</b></a>
+                                            @AppHelpers.FormatArticleDate(item.ArticleDate.ToString()).ToString()
+                                        </li>
+                                        <li><i class="fas fa-eye color-primary mr-5"></i>@AppHelpers.GetTheTotalPageViews(item.ID.ToString()).ToString()</li>
+                                        <li><i class="fas fa-comments color-primary mr-5"></i>@AppHelpers.GetTheTotalComments(item.ID.ToString()).ToString()</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="spacer"></div>
+                                }
+                    </div>
+                     }
+                }
+
+
+            </div><!-- col-md-9 -->
+
+            <div class="d-none d-md-block d-lg-none col-md-3"></div>
+            <div class="col-md-6 col-lg-4">
+                <div class="pl-20 pl-md-0">
+                    @AppHelpers.GetRandomYoutubeVideo()
+
+                    <div class="mtb-50">
+                        <h4 class="p-title"><b>POPULAR POSTS</b></h4>
+                        @AppHelpers.GetRecentPopularPost(4)
+
+                    </div><!-- mtb-50 -->
+
+                    <div class="mtb-50 pos-relative">
+                        @AppHelpers.GetRandomAdGif()
+                    </div><!-- mtb-50 -->
+
+                    <div class="mtb-50 mb-md-0">
+                        @using (Html.BeginForm("Subscribe", "Home", FormMethod.Post, new { @class = "nwsltr-primary-1" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true)
+
+                            @Html.Partial("~/Views/Alerts/_SubscribtionAlerts.cshtml")
+
+                            @AppHelpers.GetSubscriptionForm()
+
+                        }
+                    </div><!-- mtb-50 -->
+
+                </div><!--  pl-20 -->
+            </div><!-- col-md-3 -->
+
+        </div><!-- row -->
+
+    </div><!-- container -->
+</section>
+

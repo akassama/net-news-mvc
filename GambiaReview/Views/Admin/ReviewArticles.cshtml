@@ -1,0 +1,133 @@
+﻿@model IEnumerable<GambiaReview.Models.NewsArticlesModel>
+@{
+    ViewBag.Title = "Articles Pending Review";
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+    int row_count = 0;
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Posts Pending Review</li>
+        </ol>
+    </nav>
+</div>
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Manage Articles</h1>
+
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Articles Pending Review</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleCategory)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleBy)
+                            </th>
+                            <th>
+                               @Html.DisplayNameFor(model => model.ArticleDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleHeadline)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Tags)
+                            </th>
+                            <th class="text-center">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleCategory)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ArticleHeadline)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Tags)
+                            </th>
+                            <th class="text-center">
+                                Action
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            row_count = row_count+1;
+                            <tr>
+                                <td>
+                                    @row_count
+                                </td>
+                                <td>
+                                    @AppHelpers.GetArticleCategory(item.ID)
+                                </td>
+                                <td>
+                                    @AppHelpers.GetArticleBy(item.ArticleBy)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ArticleDate)
+                                </td>
+                                <td>
+                                    @AppHelpers.FormatLongText(item.ArticleHeadline, 60)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Tags)
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a href="@Url.Action("ReviewArticleDetails", "Admin", new { id = item.ID })" class="btn btn-primary">
+                                                Review
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->

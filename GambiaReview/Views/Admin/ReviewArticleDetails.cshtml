@@ -1,0 +1,175 @@
+﻿@model GambiaReview.Models.NewsArticlesModel
+
+@{
+    ViewBag.Title = "Review Article Details " + Model.ArticleHeadline;
+}
+
+<script>
+    //Reject reason
+    var max = 250;
+    function countCharReason(val) {
+        var len = val.value.length;
+        if (len >= max) {
+            val.value = val.value.substring(0, max);
+        } else {
+            $('#charNumReason').text((max - len) + " Remaining");
+        }
+    };
+</script>
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/ReviewArticles">Posts Pending Review</a></li>
+            <li class="breadcrumb-item active">Review Article Details</li>
+        </ol>
+    </nav>
+</div>
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">@Model.ArticleHeadline</h1>
+
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+    <div class="row">
+        <div class="col-md-10">
+            <img src="~/images/articles/@AppHelpers.GetArticleCategory(Model.ID).ToString()/@Model.ArticleHeadlineImage.ToString()" alt="">
+            <br/>
+            <strong>@Html.DisplayFor(model => model.ArticleHeadline)</strong>
+            
+            <div class="spacer"></div>
+
+            <ul class="list-group">
+                <li class="list-group-item">Article by: @AppHelpers.GetArticleBy(Model.ID).ToString()</li>
+                <li class="list-group-item">Date: @AppHelpers.FormatArticleDate(Html.DisplayFor(model => model.ArticleDate).ToString())</li>
+                <li class="list-group-item">Views: @AppHelpers.GetTheTotalPageViews(Html.DisplayFor(model => model.ID).ToString())</li>
+                <li class="list-group-item">Comments: @AppHelpers.GetTheTotalComments(Html.DisplayFor(model => model.ID).ToString())</li>
+            </ul>
+
+            <div class="spacer"></div>
+
+            <p class="mtb-15">
+                @if (ViewBag.HasMedia)
+                {
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="~/images/articles/@AppHelpers.GetArticleCategory(Model.ID).ToString()/@ViewBag.ArticleMediaFileName" allowfullscreen></iframe>
+                    </div>
+                        <span class="font-italic text-primary">[@ViewBag.ArticleMediaFileCaption]</span>
+                        <div class="spacer"></div>
+                }
+            </p>
+            <div class="mtb-15">
+                @Html.Raw(Model.ArticleBody)
+            </div>
+            <br />
+            <div class="border-bottom-info">
+                <h5>Tags</h5>
+                @AppHelpers.FormatArticleTags(Model.Tags)
+            </div>
+        </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="row">
+        <div class="col-md-2">
+            <a href="#" class="btn btn-danger margin-left" data-toggle="modal" data-target="#rejectModal"> Reject <i class="fas fa-times"></i></a>
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#approveModal">Approve <i class="fas fa-check"></i></a>
+        </div>
+    </div>
+
+    <div class="spacer"></div>
+
+</div>
+<!-- /.container-fluid -->
+
+<!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
+@using (Html.BeginForm("ApprovePost", "Admin"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Approve Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               <p class="text-warning">Are you sure you want to approve this post?</p>
+
+                <input type="hidden" name="PostID" id="PostID" value="@Model.ID"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-success">Yes</button>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    @using (Html.BeginForm("RejectPost", "Admin"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reject Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-warning">Are you sure you want to <span class="text-danger">reject</span> this post?</p>
+                    <br/>
+                    @*@{
+                        if (ViewBag.CurrentReviewComments != "")
+                        {
+                            <h5>Review History</h5>
+                            <div class="panel panel-default" style="max-height: 200px; overflow-y: auto;">
+                                <div class="panel-heading padded">@Html.Raw(ViewBag.CurrentReviewComments)</div>
+                            </div>
+                            <hr/>
+                        }
+                    }*@
+                    <div class="form-group">
+                        <label for="RejectReason">Please give a reason for the rejetion?</label>
+                        <textarea class="form-control" id="RejectReason" name="RejectReason" required="required" onkeyup = "countCharReason(this)"></textarea>
+                        <span class="text-danger">Max length 250 characters</span>
+                        <div id="charNumReason" class="text-warning" style="font-weight:bold"></div>
+                    </div>
+
+                    <input type="hidden" name="PostID" id="PostID" value="@Model.ID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-success">Yes</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

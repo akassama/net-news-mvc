@@ -1,0 +1,19 @@
+﻿<script>
+	new Chart(document.getElementById("pie-chart"), {
+		type: 'pie',
+		data: {
+		    labels: ["Africa", "Business", "Health", "International", "Politics", "Sports", "Technology", "Gambia", "Entertainment", "Education"],
+		  datasets: [{
+			label: "Views by categories",
+			backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#8A2BE2", "#FAEBD7", "#FF67cD", "#006400", "#FFA07A"],
+			data: [@ViewBag.TotalAdminAfricaViews,@ViewBag.TotalAdminBusinessViews,@ViewBag.TotalAdminHealthViews,@ViewBag.TotalAdminInternationalViews,@ViewBag.TotalAdminPoliticsViews,@ViewBag.TotalAdminSportsViews,@ViewBag.TotalAdminTechnologyViews,@ViewBag.TotalAdminGambiaViews,@ViewBag.TotalAdminEntertainmentViews,@ViewBag.TotalAdminEducationViews]
+		  }]
+		},
+		options: {
+		  title: {
+			display: true,
+			text: 'Views per category'
+		  }
+		}
+	});
+</script>

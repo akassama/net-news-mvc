@@ -1,0 +1,67 @@
+﻿@model GambiaReview.Models.NewsArticlesModel
+
+@{
+    ViewBag.Title = "Article Details " + Model.ArticleHeadline;
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/PendingReview">Pending Review</a></li>
+            <li class="breadcrumb-item active">Article Details</li>
+        </ol>
+    </nav>
+</div>
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">@Model.ArticleHeadline</h1>
+    <div class="row">
+        <div class="col-md-10">
+            <img src="~/images/articles/@AppHelpers.GetArticleCategory(Model.ID).ToString()/@Model.ArticleHeadlineImage.ToString()" alt="">
+            <br/>
+            <strong>@Html.DisplayFor(model => model.ArticleHeadline)</strong>
+            
+            <div class="spacer"></div>
+
+            <ul class="list-group">
+                <li class="list-group-item">Article by: @AppHelpers.GetArticleBy(Model.ID).ToString()</li>
+                <li class="list-group-item">Date: @AppHelpers.FormatArticleDate(Html.DisplayFor(model => model.ArticleDate).ToString())</li>
+                <li class="list-group-item">Views: @AppHelpers.GetTheTotalPageViews(Html.DisplayFor(model => model.ID).ToString())</li>
+                <li class="list-group-item">Comments: @AppHelpers.GetTheTotalComments(Html.DisplayFor(model => model.ID).ToString())</li>
+            </ul>
+
+            <div class="spacer"></div>
+
+            <p class="mtb-15">
+                @if (ViewBag.HasMedia)
+                {
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="~/images/articles/@AppHelpers.GetArticleCategory(Model.ID).ToString()/@ViewBag.ArticleMediaFileName" allowfullscreen></iframe>
+                    </div>
+                        <span class="font-italic text-primary">[@ViewBag.ArticleMediaFileCaption]</span>
+                        <div class="spacer"></div>
+                }
+            </p>
+            <div class="mtb-15">
+                @Html.Raw(Model.ArticleBody)
+            </div>
+            <br />
+            <div class="border-bottom-info">
+                @AppHelpers.FormatArticleTags(Model.Tags)
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->

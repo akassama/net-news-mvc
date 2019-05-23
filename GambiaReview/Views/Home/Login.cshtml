@@ -1,0 +1,20 @@
+﻿@using GambiaReview.Models
+@model LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+
+<section>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h4 class="text-center">Use another service to log in.</h4>
+                <hr />
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </div>
+        </div><!-- row -->
+    </div><!-- container -->
+</section>

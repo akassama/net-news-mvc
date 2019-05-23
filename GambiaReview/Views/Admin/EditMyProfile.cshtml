@@ -1,0 +1,205 @@
+﻿@model GambiaReview.Models.AccountsModel
+
+@{
+    ViewBag.Title = "Edit My Profile";
+}
+
+<script type="text/javascript">
+    //Numbers only field
+    //https://stackoverflow.com/questions/995183/how-to-allow-only-numeric-0-9-in-html-inputbox-using-jquery
+    //$(function () {
+    //    $('.form-group').on('keydown', '.NumberFieldOnly', function (e) { -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) || /65|67|86|88/.test(e.keyCode) && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode) && e.preventDefault() });
+    //})
+
+    $('#openFile').on('click', function () {
+        $('#ProfileImage').trigger('click');
+    });
+
+    function getFilename() {
+        //var thefile = $("ProfileImage").val();
+        var thefile = document.getElementById('ProfileImage');
+        var pathname = thefile.value;
+        var filename = pathname.replace("C:\\fakepath\\", "");
+       //$("SelectedFile").text(filename);
+        document.getElementById("SelectedFile").innerHTML = "File Name: "+ filename;
+    }
+</script>
+<style>
+    #openFile {
+        width: 160px;
+        height: 160px;
+    }
+</style>
+
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/MyProfile">My Profile</a></li>
+            <li class="breadcrumb-item active">Edit My Profile</li>
+        </ol>
+    </nav>
+</div>
+
+
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+    <!-- Page Heading -->
+    <div class="row">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h3 mb-4 text-gray-800 text-left">Edit My Profile</h1>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+            <div class="form-horizontal">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="openFile" class="profile-img-div">
+                                @{
+                                    string host = AppHelpers.GetHostName().ToString();
+                                    var url = host+"/images/accounts/" + AppHelpers.GetLoggedInProfilePic();
+                                    if (AppHelpers.CheckIfImageExistc(url).ToString() == "True")
+                                    {
+                                        <img class="card-img-top profile-img" src="~/images/accounts/@AppHelpers.GetLoggedInProfilePic()" alt="Profile pic">
+                                    }
+                                    else
+                                    {
+                                        <img class="card-img-top profile-img" src="~/images/accounts/@AppHelpers.GetLoggedInProfilePic()" alt="Profile pic">
+                                        <!--Method failing to get response from server thus can't use default image. Needs checking-->
+                                        @*<img class="card-img-top profile-img" src="~/images/accounts/default/default.jpg" alt="Profile pic">*@
+                                    }
+                                }
+                                <div class="icon-centered">
+                                    <i class="fas fa-camera-retro fa-2x text-white margin-left"></i>
+                                </div>
+                                <input type="file" name="ProfileImage" id="ProfileImage" class="hidden_file_upload" onchange="getFilename()"/>
+                            </div>
+                        </div>
+                        <div id="display-img-div" class="col-md-4" style="display:none">
+                            <img src="" id="profile-img-tag" class="card-img-top profile-img" />
+                        </div>
+                        <div class="col-md-4 margin-top">
+                            <strong id="SelectedFile" class="text-danger"></strong>
+                        </div>
+                        <script type="text/javascript">
+                            function readURL(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        $('#profile-img-tag').attr('src', e.target.result);
+                                    }
+                                    reader.readAsDataURL(input.files[0]);
+                                    $('#display-img-div').show();
+                                }
+                                else {
+                                    $('#display-img-div').hide();
+                                }
+                            }
+                            $("#ProfileImage").change(function () {
+                                readURL(this);
+                            });
+                        </script>
+                    </div>
+                    <div class="card-body">
+                        @{
+                            var title = Model.FirstName;
+                            if (string.IsNullOrEmpty(Model.FirstName))
+                            {
+                                title = Model.Email;
+                            }
+                        }
+                        <h5 class="card-title">@title</h5>
+                        <div class="row">
+                            <div class="form-group">
+                                <label class = "control-label col-md-12">@Html.LabelFor(c => c.FirstName)</label>
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-12">@Html.LabelFor(c => c.LastName)</label>
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-12">@Html.LabelFor(c => c.Country)</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("Country", (IEnumerable<SelectListItem>)ViewBag.COUNTRY_ISOS, "Select country", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-md-12">@Html.LabelFor(c => c.CountryCode)</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownList("CountryCode", (IEnumerable<SelectListItem>)ViewBag.PHONE_CODES, "Country code", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.CountryCode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-12">@Html.LabelFor(c => c.PhoneNumber)</label>
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control"} })
+                                    @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <hr />
+                        <button type="submit" class="btn btn-success">Update <i class="fas fa-paper-plane"></i></button>
+
+                        <!--Hidden Fields-->
+                        <div class="sr-only">
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden", @Value = "Encrypted#N1" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Salt, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden", @Value = "Encrypted#N1" } })
+                                @Html.ValidationMessageFor(model => model.Salt, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden" } })
+                                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.DirectoryName, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden" } })
+                                @Html.ValidationMessageFor(model => model.DirectoryName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+<!-- /.container-fluid -->

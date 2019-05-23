@@ -1,0 +1,87 @@
+﻿@model IEnumerable<GambiaReview.Models.NewsArticlesModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleTextIdentifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleCategory)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleHeadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleHeadlineImage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HeadlineImageDescription)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ArticleBody)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeleteStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tags)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleTextIdentifier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleCategory)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleHeadline)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleHeadlineImage)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HeadlineImageDescription)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ArticleBody)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeleteStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tags)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

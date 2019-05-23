@@ -1,0 +1,94 @@
+﻿@model IEnumerable<GambiaReview.Models.AccountsModel>
+
+@{
+    ViewBag.Title = "Admin Stats";
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Stats</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Stats</h1>
+
+    <!-- Content Row -->
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <!-- Area Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Post Views</h6>
+                </div>
+                <div class="card-body">
+                    <div style="width:100%;">
+                        <canvas id="line-chart"></canvas>
+                    </div>
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <!-- Bar Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Posts Per Month</h6>
+                </div>
+                <div class="card-body">
+                    <div style="width:100%;">
+                        <canvas id="bar-chart"></canvas>
+                    </div>
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Popular Categories</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div style="width:100%;">
+                        <canvas id="pie-chart" style="width: 100%;"></canvas>
+                    </div>
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- /.container-fluid -->
+@{
+    //Line Chart Area JS
+    Html.RenderPartial("~/Views/Admin/_LineChartScript.cshtml");
+
+    //Bar Chart Area JS
+    Html.RenderPartial("~/Views/Admin/_BarChartScript.cshtml");
+
+    //Bar Chart Area JS
+    Html.RenderPartial("~/Views/Admin/_PieChartScript.cshtml");
+}

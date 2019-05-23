@@ -1,0 +1,98 @@
+﻿@model GambiaReview.Models.NewsArticlesModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>NewsArticlesModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleTextIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleTextIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleCategory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleCategory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleHeadline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleHeadline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleHeadlineImage)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleHeadlineImage)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HeadlineImageDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HeadlineImageDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ArticleBody)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ArticleBody)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeleteStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeleteStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tags)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tags)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

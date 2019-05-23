@@ -1,0 +1,158 @@
+﻿@model GambiaReview.Models.AccountsModel
+
+@{
+    ViewBag.Title = "Settings";
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Settings</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+    <!-- Content Row -->
+    <h1 class="h3 mb-4 text-gray-800 text-left">Account Settings</h1>
+    <div class="row">
+        <!-- Border Left Utilities -->
+        @{
+            if (Session["sessionOauth"] != null)
+            {
+                if (Convert.ToBoolean(Session["sessionOauth"]) == false)
+                {
+                    <div class="col-lg-6">
+                        <a href="#changePasswordModal" data-toggle="modal" data-target="#changePasswordModal">
+                            <div class="card mb-4 py-3 border-left-primary">
+                                <div class="card-body">
+                                    Change Password
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        }
+
+        <div class="col-lg-6">
+            <a href="@Url.Action("Settings", "Admin")">
+                <div class="card mb-4 py-3 border-left-primary">
+                    <div class="card-body">
+                        Setting Item
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+
+<script type="text/javascript">
+            function checkPasswordMatch() {
+                var password = $("#Password").val();
+                var confirmPassword = $("#RepeatPassword").val();
+
+                if (password != confirmPassword) {
+                    $("#divCheckPasswordMatch").html("<strong class='text-danger'>Passwords do not match!</strong>");
+                    $('#SignUpButton').attr("disabled", true);
+                }
+                else {
+                    $("#divCheckPasswordMatch").html("<strong class='text-success'>Passwords match.</strong>");
+                    $('#SignUpButton').attr("disabled", false);
+                }
+            }
+
+            $(document).ready(function () {
+                $("#RepeatPassword").keyup(checkPasswordMatch);
+            });
+</script>
+  <!-- Change Password Modal -->
+<div class="modal" id="changePasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Change Password</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="col-md-12">
+                    @{
+                        var pw_rule = "Must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters";
+                    }
+                </div>
+
+               @using (Html.BeginForm("UpdatePassword", "Admin"))
+               {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true)
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Old Password</label>
+                    <input type="password" class="form-control" id="OldPassword" name="OldPassword"  placeholder="Enter previous password" required="required">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1" data-toggle="tooltip" data-placement="top" title="@pw_rule">New Password</label>
+                    <input type="password" class="form-control" id="Password" name="Password" placeholder="Password" required="required">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Repeat Password</label>
+                    <input type="password" class="form-control" id="RepeatPassword" name="RepeatPassword" placeholder="Repeat Password" required="required">
+                    <!--Jquery Password Validation Message-->
+                    <span class="registrationFormAlert" id="divCheckPasswordMatch">
+                    </span>
+                    <span class="field-validation-valid" data-valmsg-for="RepeatPassword" data-valmsg-replace="true"></span>
+                </div>
+
+               }
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

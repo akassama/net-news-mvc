@@ -1,0 +1,169 @@
+﻿@model IEnumerable<GambiaReview.Models.AdvertsModel>
+
+@{
+    ViewBag.Title = "Adverts";
+}
+
+
+<section class="ptb-0">
+    <div class="mb-30 brdr-ash-1 opacty-5"></div>
+    <div class="container">
+        <a class="mt-10" href="~/"><i class="fas fa-home mlr-5"></i>Home<i class="fas fa-angle-right mlr-10"></i></a>
+        <a class="mt-10" href="~/Categories">Categories<i class="fas fa-angle-right mlr-10"></i></a>
+        <a class="mt-10 color-ash" href="">Adverts</a>
+    </div><!-- container -->
+</section>
+
+
+<section>
+    <div class="container">
+        @*<img src="~/images/ad_gifs/advert_icon.jpg" class="rounded" alt="Cinque Terre">*@
+        <div class="row">
+            <div class="col-md-12 col-lg-8">
+                <h4 class="p-title"><b>Adverts</b></h4>
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                    var text = @AppHelpers.FormatLongText(item.AdvertHeadline.ToString(), 15);
+                    <div class="col-sm-6 max-img-15 zoom-xm">
+                        <img src="https://via.placeholder.com/150?text=@text" class="rounded" alt="@item.AdvertHeadline">
+                        @*<img src="~/images/advert_images/advert_icon.jpg" alt="@item.AdvertHeadline" class="rounded">*@
+                        <h4 class="pt-20">
+                            <a href="#">
+                                @AppHelpers.FormatLongText(item.AdvertHeadline.ToString(), 50)
+                            </a>
+                            @*<b>@link</b>*@
+                        </h4>
+                        <ul class="list-li-mr-20 pt-10 mb-30">
+                            <li class="color-lite-black">
+                                by <a href="#" class="color-black"><b>@AppHelpers.GetArticleBy(item.ID).ToString()</b></a>
+                                @AppHelpers.FormatArticleDate(item.AdvertDate.ToString()).ToString()
+                            </li>
+                        </ul>
+                    </div><!-- col-sm-6 -->
+                    }
+
+                </div><!-- row -->
+
+            </div><!-- col-md-9 -->
+
+            <div class="d-none d-md-block d-lg-none col-md-3"></div>
+            <div class="col-md-6 col-lg-4">
+                <div class="pl-20 pl-md-0">
+                    @AppHelpers.GetRandomYoutubeVideo()
+
+                    <div class="mtb-50">
+                        <h4 class="p-title"><b>POPULAR ADVERTS</b></h4>
+                        @AppHelpers.GetRecentPopularAdverts(4)
+
+                    </div><!-- mtb-50 -->
+
+                    <div class="mtb-50 pos-relative">
+                        @AppHelpers.GetRandomAdGif()
+                    </div><!-- mtb-50 -->
+
+                    <div class="mtb-50 mb-md-0">
+                        @using (Html.BeginForm("Subscribe", "Home", FormMethod.Post, new { @class = "nwsltr-primary-1" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true)
+
+                            @Html.Partial("~/Views/Alerts/_SubscribtionAlerts.cshtml")
+
+                            @AppHelpers.GetSubscriptionForm()
+
+                        }
+                    </div><!-- mtb-50 -->
+
+                </div><!--  pl-20 -->
+            </div><!-- col-md-3 -->
+
+        </div><!-- row -->
+
+    </div><!-- container -->
+</section>
+
+
+
+
+
+
+
+
+@*<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertTextIdentifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertBy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertCategory)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertHeadline)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertImage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertBody)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeleteStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AdvertExpiryDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertTextIdentifier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertBy)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertCategory)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertHeadline)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertImage)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertBody)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeleteStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AdvertExpiryDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>*@

@@ -1,0 +1,136 @@
+﻿@model IEnumerable<GambiaReview.Models.ActivityLogModel>
+
+@{
+    ViewBag.Title = "Settings";
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+    int row_count = 0;
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Activity Log</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Manage Articles</h1>
+
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Activity Log</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ActivityType)
+                            </th>
+                            <th>
+                                <div>@Html.DisplayNameFor(model => model.ActivityDescription)</div>
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Link)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ActivityDate)
+                            </th>
+                            @*<th class="text-center">
+                                Action
+                            </th>*@
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ActivityType)
+                            </th>
+                            <th>
+                                <div>@Html.DisplayNameFor(model => model.ActivityDescription)</div>
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Link)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ActivityDate)
+                            </th>
+                            @*<th class="text-center">
+                                Action
+                            </th>*@
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            row_count = row_count + 1;
+                            <tr>
+                                <td>
+                                    @row_count
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivityType)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivityDescription)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Link)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ActivityDate)
+                                </td>
+                                @*<td>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <a href="@Url.Action("EditActivity", "Admin", new { id = item.ID })" class="btn btn-primary">
+                                                Edit
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a href="@Url.Action("ActivityDetails", "Admin", new { id = item.ID })" class="btn btn-success">
+                                                Details
+                                                <i class="fas fa-eye" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a href="@Url.Action("RemoveActivity", "Admin", new { id = item.ID })" class="btn btn-danger">
+                                                Delete
+                                                <i class="fas fa-trash" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->

@@ -1,0 +1,255 @@
+﻿@model GambiaReview.Models.NewsArticlesModel
+
+@{
+    ViewBag.Title = "Edit Article";
+}
+
+<script type="text/javascript">
+
+    function getFilename(file) {
+        var FileSize = file.files[0].size / 1024 / 1024; // in MB
+        if (FileSize > 2) {
+            document.getElementById("SelectedFileError").innerHTML = "File size exceeds 2 MB.";
+        } else {
+            //var thefile = $("ArticleHeadlineImage").val();
+            var thefile = document.getElementById('ArticleHeadlineImage');
+            var pathname = thefile.value;
+            var filename = pathname.replace("C:\\fakepath\\", "");
+            //$("SelectedFile").text(filename);
+            document.getElementById("SelectedFile").innerHTML = "File Name: " + filename;
+            document.getElementById("SelectedFileError").innerHTML = "";
+        }
+    }
+
+    function getMediaFilename(file) {
+        var FileSize = file.files[0].size / 1024 / 1024; // in MB
+        if (FileSize > 10) {
+            document.getElementById("SelectedMediaFileError").innerHTML = "File size exceeds 10 MB.";
+            // $(file).val(''); //for clearing with Jquery
+        } else {
+            var thefile = document.getElementById('ArticleMedia');
+            var pathname = thefile.value;
+            var filename = pathname.replace("C:\\fakepath\\", "");
+            document.getElementById("SelectedMediaFile").innerHTML = "File Name: " + filename;
+            document.getElementById("SelectedMediaFileError").innerHTML = "";
+        }
+    }
+
+    $(document).ready(function () {
+        //Set button visibilities
+        $("#PostButton").show();
+        $("#PostedButton").hide();
+
+        $("#PostButton").click(function () {
+            $("#PostButton").hide();
+            $("#PostedButton").show();
+        });
+    });
+</script>
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/ManagePosts">Manage Articles</a></li>
+            <li class="breadcrumb-item active">Edit Article</li>
+        </ol>
+    </nav>
+</div>
+
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 offset-md-1 form-row-bg border-bottom-primary">
+            <!-- Page Heading -->
+            <h1 class="h3 mb-4 text-gray-800">New Article</h1>
+            <span class="text-danger float-right">* Required</span>
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { name = "edit_post", id = "edit_post", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ArticleBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ArticleBy, new { htmlAttributes = new { @class = "form-control", @Value = Model.ArticleBy, @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.ArticleBy, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.ArticleCategory, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("ArticleCategory", (IEnumerable<SelectListItem>)ViewBag.CATEGORIES, "Select category", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ArticleCategory, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ArticleDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ArticleDate, new { htmlAttributes = new { @class = "form-control", @Value = Model.ArticleDate, @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.ArticleDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.ArticleHeadline, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ArticleHeadline, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ArticleHeadline, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.ArticleHeadlineImage, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <small>Select Image, Max size 2mb</small>
+                        <div class="col-md-10">
+                            @*@Html.EditorFor(model => model.ArticleHeadlineImage, new { htmlAttributes = new { @class = "form-control" } })*@
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="ArticleHeadlineImage" name="ArticleHeadlineImage" aria-describedby="HeadlineImage"  accept="image/*" onchange="getFilename(this)" value="Default">
+                                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.ArticleHeadlineImage, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div style="img{ width: 150px; height: 50px;}">
+                        <div id="display-img-div" class="col-md-4" style="display:none">
+                            <img src="" id="post-img-tag" class="post-preview-img" />
+                            <br/>
+                            <strong id="SelectedFile" class="text-danger"></strong>
+                            <strong id="SelectedFileError" class="text-danger"></strong>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                            function readURL(input) {
+                                if (input.files && input.files[0]) {
+                                    var reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        $('#post-img-tag').attr('src', e.target.result);
+                                    }
+                                    reader.readAsDataURL(input.files[0]);
+                                    $('#display-img-div').show();
+                                }
+                                else {
+                                    $('#display-img-div').hide();
+                                }
+                            }
+                            $("#ArticleHeadlineImage").change(function () {
+                                readURL(this);
+                            });
+                    </script>
+
+
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.HeadlineImageDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.HeadlineImageDescription, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.HeadlineImageDescription, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <a href="#media-upload" class="no-decoration" data-toggle="collapse">
+                        <i class="fas fa-plus"></i> Add Media File
+                    </a>
+
+                    <div class="collapse" id="media-upload">
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="ArticleMedia">Media File</label>
+                            <small>Select Video .mp4, Max size 10mb</small>
+                            <div class="col-md-10">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="ArticleMedia" name="ArticleMedia" accept=".mp4" aria-describedby="HeadlineImage" onchange="getMediaFilename(this)">
+                                    <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+                                </div>
+                                <strong id="SelectedMediaFile" class="text-danger"></strong>
+                                <span id="SelectedMediaFileError" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="MediaFileDescription" class="col-md-2">Media File Descriptin</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="MediaFileDescription" name="MediaFileDescription">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="spacer-large"></div>
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.ArticleBody, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.ArticleBody, new { @class = "form-control", @rows = "5" })
+                            @Html.ValidationMessageFor(model => model.ArticleBody, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <!--Includ SummerNote Libraries-->
+                    <div class="SUMMER">
+                        @{
+                            Html.RenderPartial("_summernote");
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <span class="text-danger">*</span>
+                        @Html.LabelFor(model => model.Tags, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <small>Press control and select to choose tag.</small>
+                        <div class="col-md-10 min-h-100x">
+                            @Html.DropDownList("Tags", (IEnumerable<SelectListItem>)ViewBag.TAGS, "Choose tags", new { @class = "form-control", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(model => model.Tags, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <button type="submit" class="btn btn-success" id="PostButton">Update <i class="fas fa-paper-plane"></i></button>
+                            <!--button shows on post -->
+                            <button type="button" class="btn btn-success disabled" id="PostedButton" style="display: none;">Posting <i class="fas fa-spinner fa-spin"></i></button>
+
+                            <a href="~/Admin/ManagePosts/" class="btn btn-danger margin-left"> Cancel <i class="fas fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!--Hidden Fields-->
+                    <div class="sr-only">
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ArticleTextIdentifier, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden", @Value = "1" } })
+                            @Html.ValidationMessageFor(model => model.ArticleTextIdentifier, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.DeleteStatus, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden", @Value = "1" } })
+                            @Html.ValidationMessageFor(model => model.DeleteStatus, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ReviewedBy, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden"} })
+                            @Html.ValidationMessageFor(model => model.ReviewedBy, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.ReviewStatus, new { htmlAttributes = new { @class = "form-control", @hidden = "hidden", @Value = "0" } })
+                            @Html.ValidationMessageFor(model => model.ReviewStatus, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->

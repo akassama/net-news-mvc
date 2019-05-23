@@ -1,0 +1,34 @@
+﻿<script>
+// Bar chart
+new Chart(document.getElementById("bar-chart"), {
+    type: 'bar',
+    data: {
+      labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      datasets: [
+        {
+          label: "Posts per month",
+          backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#8A2BE2", "#FAEBD7","#006400","#FFA07A","#808000","#CD5C5C","#48D1CC",],
+          data: [@ViewBag.TotalAdminPostJan,
+				@ViewBag.TotalAdminPostFeb,
+				@ViewBag.TotalAdminPostMar,
+				@ViewBag.TotalAdminPostApr,
+				@ViewBag.TotalAdminPostMay,
+				@ViewBag.TotalAdminPostJun,
+				@ViewBag.TotalAdminPostJul,
+				@ViewBag.TotalAdminPostAug,
+				@ViewBag.TotalAdminPostSep,
+				@ViewBag.TotalAdminPostOct,
+				@ViewBag.TotalAdminPostNov,
+				@ViewBag.TotalAdminPostDec]
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: 'Total monthly post'
+      }
+    }
+});
+</script>

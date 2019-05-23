@@ -1,0 +1,52 @@
+﻿@model GambiaReview.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+@using GambiaReview.Models
+
+
+<h4>Use another service to log in.</h4>
+<hr />
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0) {
+        <div>
+            <p>
+                Oauth. Not Available Yet.
+            </p>
+        </div>
+    }
+    else {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl })) {
+            @Html.AntiForgeryToken()
+            string btn_color = "default";
+            string btn_text = "Oauth Service";
+            string icon_text = "fab fa-pencil";
+
+
+            <div id="oauth-div">
+                @foreach (AuthenticationDescription p in loginProviders)
+                {
+                    if (p.AuthenticationType.ToString().Contains("Facebook"))
+                    {
+                        btn_color = "primary";
+                        btn_text = "Facebook";
+                        icon_text = "fab fa-facebook-square";
+                    }
+                    else if (p.AuthenticationType.ToString().Contains("Twitter"))
+                    {
+                        btn_color = "info";
+                        btn_text = "Twitter";
+                        icon_text = "fab fa-twitter";
+                    }
+
+                    @*<button type="submit" class="btn btn-@btn_color" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>*@
+
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-@btn_color lg-bt-width"> <small><i class="@icon_text"></i> Sign in with @btn_text</small></button>
+                    </div>
+                }
+            </div>
+
+
+        }
+    }
+}

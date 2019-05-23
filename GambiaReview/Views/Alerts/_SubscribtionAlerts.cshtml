@@ -1,0 +1,21 @@
+﻿
+
+<div id="SubsAlertDiv">
+    @{
+        if (TempData["SubsAlertDiv"] != null)
+        {
+            if (TempData["SuccessMessage"] != null)
+            {
+                <span class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </span>
+            }
+            else if (TempData["ErrorMessage"] != null)
+            {
+                <span class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </span>
+            }
+        }
+    }
+</div>

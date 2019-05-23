@@ -1,0 +1,125 @@
+﻿@model GambiaReview.Models.AccountsModel
+
+@{
+    ViewBag.Title = "My Profile";
+}
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">My Profile</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+    <div class="row">
+
+        <div class="col-md-8 offset-md-2">
+            <h1 class="h3 mb-4 text-gray-800 text-left">My Profile</h1>
+
+            <div class="card" style="">
+                @{
+                    string host = AppHelpers.GetHostName().ToString();
+                    var url = host + "/images/accounts/" + AppHelpers.GetLoggedInProfilePic();
+                    if (AppHelpers.CheckIfImageExistc(url).ToString() == "True")
+                    {
+                        <img class="card-img-top profile-img" src="~/images/accounts/@AppHelpers.GetLoggedInProfilePic()" alt="Profile pic">
+                    }
+                    else
+                    {
+                        <img class="card-img-top profile-img" src="~/images/accounts/@AppHelpers.GetLoggedInProfilePic()" alt="Profile pic">
+                        <!--Method failing to get response from server thus can't use default image. Needs checking-->
+                        @*<img class="card-img-top profile-img" src="~/images/accounts/default/default.jpg" alt="Profile pic">*@
+                    }
+                }
+                <div class="card-body">
+                    @{
+                        var title = Model.FirstName;
+                        if (string.IsNullOrEmpty(Model.FirstName))
+                        {
+                            title = Model.Email;
+                        }
+                    }
+                    <h5 class="card-title">@title</h5>
+                    <div class="row">
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">First Name: <span class="text-info font-weight-bold">@Model.FirstName</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">Last Name: <span class="text-info font-weight-bold">@Model.LastName</span></p>
+                            </div>
+                        </div>
+                        <!--//-->
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">Country: <span class="text-info font-weight-bold">@Model.Country</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">PhoneNumber: <span class="text-info font-weight-bold">(@Model.CountryCode) @Model.PhoneNumber</span></p>
+                            </div>
+                        </div>
+                        <!--//-->
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">Email: <span class="text-info font-weight-bold">@Model.Email</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                @{
+                                    var acc_type = "Admin";
+                                    
+                                }
+                                <p class="card-text">Type: <span class="text-info font-weight-bold">@acc_type</span></p>
+                            </div>
+                        </div>
+                        <!--//-->
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                @{
+                                    var acc_status = "Active";
+                                    if (Model.Status != null && Model.Status == 0) { acc_status = "Unapproved"; }
+                                }
+                                <p class="card-text">Status: <span class="text-info font-weight-bold">@acc_status</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 border-left-primary">
+                            <div class="card-body">
+                                <p class="card-text">Date Created: <span class="text-info font-weight-bold">@Model.DateCreated</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <a href="@Url.Action("EditMyProfile","Admin")" class="btn btn-success">
+                        Edit
+                        <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.container-fluid -->

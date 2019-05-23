@@ -1,0 +1,90 @@
+﻿@model GambiaReview.Models.AdvertsModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>AdvertsModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertTextIdentifier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertTextIdentifier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertCategory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertCategory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertHeadline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertHeadline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertImage)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertImage)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertBody)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertBody)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeleteStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeleteStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdvertExpiryDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdvertExpiryDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

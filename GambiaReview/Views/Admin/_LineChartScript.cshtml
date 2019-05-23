@@ -1,0 +1,87 @@
+﻿<script>
+		var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var config = {
+			type: 'line',
+			data: {
+				labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+				datasets: [{
+					label: 'View graph',
+					backgroundColor: window.chartColors.red,
+					borderColor: window.chartColors.red,
+					data: [
+						@ViewBag.TotalPageViewsJan,
+						@ViewBag.TotalPageViewsFeb,
+						@ViewBag.TotalPageViewsMar,
+						@ViewBag.TotalPageViewsApr,
+						@ViewBag.TotalPageViewsMay,
+						@ViewBag.TotalPageViewsJun,
+						@ViewBag.TotalPageViewsJul,
+						@ViewBag.TotalPageViewsAug,
+						@ViewBag.TotalPageViewsSep,
+						@ViewBag.TotalPageViewsOct,
+						@ViewBag.TotalPageViewsNov,
+						@ViewBag.TotalPageViewsDec
+					],
+					fill: false,
+				}]
+			},
+			options: {
+				responsive: true,
+				title: {
+					display: true,
+					text: 'Views per month'
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Month'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Total Views'
+						}
+					}]
+				}
+			}
+		};
+
+		window.onload = function() {
+			var ctx = document.getElementById('line-chart').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+		};
+
+		var colorNames = Object.keys(window.chartColors);
+
+</script>
+@*<p>
+        @{
+
+            var TotalAdminPostsArray = ViewData["TotalAdminPostsArray"] as string[];
+        }
+
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 01, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 02, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 03, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 04, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 05, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 06, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 07, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 08, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 09, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 10, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 11, DateTime.Now.Year) <br/><span>New</span>
+    @AppHelpers.GetTotalAdminPostsViews(TotalAdminPostsArray, 12, DateTime.Now.Year)
+    </p>*@

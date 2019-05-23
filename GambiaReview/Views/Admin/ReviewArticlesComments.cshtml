@@ -1,0 +1,237 @@
+﻿@model IEnumerable<GambiaReview.Models.PostReviewsModel>
+@{
+    ViewBag.Title = "Review Articles Comments";
+}
+
+<script>
+    //Reject reason
+    var max = 250;
+    function countCharComments(val) {
+        var len = val.value.length;
+        if (len >= max) {
+            val.value = val.value.substring(0, max);
+        } else {
+            $('#charNumComments').text((max - len) + " Remaining");
+        }
+    };
+
+
+    function openCommentModal(review_id, post_id, reviewer_email) {
+        $("#ModalPostReviewID").val(review_id);
+        $("#ModalPostID").val(post_id);
+        $("#ReviewerEmail").val(reviewer_email);
+
+        $('#addCommentModal').modal('show');
+    }
+</script>
+
+<!-- Topbar -->
+@{
+    Html.RenderPartial("~/Views/Admin/_AdminNav.cshtml");
+    int row_count = 0;
+}
+<!-- End of Topbar -->
+
+<!-- Breadcrumb -->
+<div class="light-font">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb primary-color">
+            <li class="breadcrumb-item"><a class="white-text" href="~/Admin/">Dashboard</a></li>
+            <li class="breadcrumb-item active">Review Articles Comments</li>
+        </ol>
+    </nav>
+</div>
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <h1 class="h3 mb-4 text-gray-800">Review Articles Comments</h1>
+
+    <!--//Action Messages-->
+    @Html.Partial("~/Views/Alerts/_AdminActionAlerts.cshtml")
+
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Articles Pending Review</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewedBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewComments)
+                            </th>
+                            <th>
+                               @Html.DisplayNameFor(model => model.AddressedBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AddressedByComments)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewStatus)
+                            </th>
+                            <th class="text-center">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                #
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewComments)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewComments)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AddressedBy)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.AddressedByComments)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ReviewStatus)
+                            </th>
+                            <th class="text-center">
+                                Action
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            row_count = row_count+1;
+                            <tr>
+                                <td>
+                                    @row_count
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ReviewedBy)
+                                </td>
+                                <td>
+                                   <strong class="text-warning">
+                                       @Html.DisplayFor(modelItem => item.ReviewComments)
+                                   </strong>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AddressedBy)
+                                </td>
+                                <td>
+                                    <strong class="text-success">
+                                        @Html.DisplayFor(modelItem => item.AddressedByComments)
+                                    </strong>
+                                </td>
+                                <td>
+                                    @{ 
+                                        var display_button = "";
+                                        if (item.ReviewStatus == 0)
+                                        {
+                                            <span class="text-danger">
+                                                Un-Addressed
+                                            </span>
+                                            display_button = "disabled";
+                                        }
+                                        else
+                                        {
+                                            <span class="text-success">
+                                                Addressed
+                                            </span>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="#" class="btn btn-success min-width-75" @*data-toggle="modal" data-target="#addCommentModal"*@ onclick="openCommentModal('@item.ID','@item.PostID', '@item.ReviewedBy')" @display_button>
+                                                Comment
+                                                <br />
+                                                <i class="fas fa-file-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="@Url.Action("EditArticle", "Admin", new { id = item.ID })" class="btn btn-danger min-width-75" @display_button>
+                                                Edit
+                                                <br />
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @*<div class="row">
+                                        <div class="col-md-4">
+                                            <a href="#" class="btn btn-danger min-width-75" data-toggle="modal" data-target="#addCommentModal"  @display_button>
+                                                 Comment
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <a href="@Url.Action("EditArticle", "Admin", new { id = item.PostID })" class="btn btn-primary min-width-75" @display_button>
+                                                Edit
+                                                <i class="fas fa-pencil-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>*@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+
+<!-- Reject Modal -->
+<div class="modal fade" id="addCommentModal" tabindex="-1" role="dialog" aria-labelledby="addCommentModalLabel" aria-hidden="true">
+    @using (Html.BeginForm("AddReviewPostComment", "Admin"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Resolution Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-warning">Add comment regarding resolution of the post review.</p>
+                    <br />
+
+                    <div class="form-group">
+                        <label for="RejectReason">Resolution Comment</label>
+                        <textarea class="form-control" id="AddressedByComments" name="AddressedByComments" required="required" onkeyup="countCharComments(this)"></textarea>
+                        <span class="text-danger">Max length 250 characters</span>
+                        <div id="charNumComments" class="text-warning" style="font-weight:bold"></div>
+                    </div>
+
+                <input type="hidden" name="ModalPostReviewID" id="ModalPostReviewID" value="" />
+                <input type="hidden" name="ModalPostID" id="ModalPostID" value="" />
+                <input type="hidden" name="ReviewerEmail" id="ReviewerEmail" value="" />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-success">Yes</button>
+                </div>
+            </div>
+        </div>
+        }
+</div>
