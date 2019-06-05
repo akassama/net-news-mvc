@@ -28,8 +28,14 @@
         <div class="row @blur_mask">
 
             <div class="col-md-12 col-lg-8">
+                <div class="row">
+                    @AppHelpers.SocialShareIconsTop(Request.Url.AbsoluteUri, 4, 8)
+                </div>
                 <img src="~/images/articles/@AppHelpers.GetArticleCategory(Model.ID).ToString()/@Model.ArticleHeadlineImage.ToString()" alt="">
                 <h3 class="mt-30"><b>@Html.DisplayFor(model => model.ArticleHeadline)</b></h3>
+                <div class="row margin-top">
+                    @AppHelpers.SocialShareIconsTop(Request.Url.AbsoluteUri)
+                </div>
                 <ul class="list-li-mr-20 mtb-15">
                     <li>by <a href="#"><strong>@AppHelpers.GetArticleBy(Model.ID).ToString()</strong>
                         </a> @AppHelpers.FormatArticleDate(Html.DisplayFor(model => model.ArticleDate).ToString())
@@ -55,28 +61,19 @@
                 </div>
 
 
-                <div class="float-left-right text-center mt-40 mt-sm-20">
+                <div class="row">
 
                     <ul class="mb-30 list-li-mt-10 list-li-mr-5 list-a-plr-15 list-a-ptb-7 list-a-bg-grey list-a-br-2 list-a-hvr-primary ">
                         @AppHelpers.FormatArticleTags(Model.Tags)
                     </ul>
-
-                    <ul class="a2a_kit a2a_kit_size_32 a2a_default_style mb-30 list-a-bg-grey list-a-hw-radial-35 list-a-hvr-primary list-li-ml-5">
-                        @AppHelpers.SocialShareIcons(Request.Url.AbsoluteUri)
-                    </ul>
                 </div><!-- float-left-right -->
-                
-                <!-- AddToAny BEGIN -->
-                @*<div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-                    <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-                    <a class="a2a_button_facebook" ><i class="fab fa-facebook"></i></a>
-                    <a class="a2a_button_twitter"><i class="fab fa-twitter"></i></a>
-                    <a class="a2a_button_email"><i class="fab fa-envelope"></i></a>
-                    <a class="a2a_button_whatsapp"><i class="fab fa-whatsapp"></i></a>
-                </div>*@
-                <!-- AddToAny END -->
 
-                <div class="brdr-ash-1 opacty-5"></div>
+                <div class="row">
+                    <ul class="a2a_kit a2a_kit_size_32 a2a_default_style mb-30 list-a-bg-grey list-a-hw-radial-35 list-a-hvr-primary list-li-ml-5">
+                        @AppHelpers.SocialShareIconsBottom(Request.Url.AbsoluteUri)
+                    </ul>
+                </div>
+                <div class="spacer-xl-large"></div>
 
                 <h4 class="p-title mt-50"><b>YOU MAY ALSO LIKE </b></h4>
                 <div class="row">
@@ -93,16 +90,16 @@
                     <h4 class="p-title mt-20"><b>BE THE FIRST TO COMMENT</b></h4>
                 }
 
-                @AppHelpers.GetArticleComments(Model.ID)
-
-
-                <!-- Suspend Account Modal -->
+                <!-- Article Comment Form -->
                 <h4 class="p-title mt-20"><b>LEAVE A COMMENT</b></h4>
                 @using (Html.BeginForm("AddComment", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-block form-plr-15 form-h-45 form-mb-20 form-brdr-lite-white mb-md-50" }))
                 {
                     @Html.AntiForgeryToken()
                     @AppHelpers.GetArticleCommentForm(Model.ID)
                 }
+
+                @AppHelpers.GetArticleComments(Model.ID)
+
 
             </div><!-- col-md-9 -->
 

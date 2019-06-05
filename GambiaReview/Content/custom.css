@@ -21,34 +21,34 @@ Spacer classer
 Padding classes
 */
 .padded{
-  padding:1em;
+  padding:1em !important;
 }
 .padded-top{
-  padding-top:1em;
+  padding-top:1em !important;
 }
 .padded-bottom{
-  padding-bottom:1em;
+  padding-bottom:1em !important;
 }
 .padded-top-xl{
-  padding-top:2em;
+  padding-top:2em !important;
 }
 .padded-bottom-xl{
-  padding-bottom:2em;
+  padding-bottom:2em !important;
 }
 .left-padded{
-  padding-left:1em;
+  padding-left:1em !important;
 }
 .left-padded-xl{
-  padding-left:2em;
+  padding-left:2em !important;
 }
 .right-padded{
-  padding-right:1em;
+  padding-right:1em !important;
 }
 .right-padded-xl{
-  padding-right:2em;
+  padding-right:2em !important;
 }
 .padded-large{
-  padding:1.5em;
+  padding:1.5em !important;
 }
 
 .margin-left {
@@ -299,4 +299,204 @@ header .logo img{
 
 .min-width-50{
     min-width: 50px;
+}
+
+
+
+/* Share button colors */
+.share-btn {
+ padding: 20px;
+ min-width:5em;
+}
+
+
+.bg-facebk {
+  background-color: #3B5998 !important;
+}
+.bg-tweet {
+  background-color: #25d366 !important;
+}
+.bg-insta {
+  background-color: #E1306C !important;
+}
+.bg-whatsapp {
+  background-color: #429fe5 !important;
+}
+.bg-email {
+  background-color: #430297 !important;
+}
+
+
+.btn-facebk {
+  color: #fff;
+  background-color: #3B5998;
+  border-color: #17a2b8;
+}
+
+.btn-facebk:hover {
+  color: #fff;
+  background-color: #2e4a84;
+  border-color: #117a8b;
+}
+
+.btn-facebk:focus, .btn-facebk.focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-facebk.disabled, .btn-tweet:disabled {
+  color: #fff;
+  background-color: #455e91;
+  border-color: #17a2b8;
+}
+
+.btn-tweet:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-facebk.dropdown-toggle {
+  color: #fff;
+  background-color: #455e91;
+  border-color: #10707f;
+}
+
+.btn-tweet:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-facebk.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+
+
+.btn-tweet {
+  color: #fff;
+  background-color: #429fe5;
+  border-color: #17a2b8;
+}
+
+.btn-tweet:hover {
+  color: #fff;
+  background-color: #4190cc;
+  border-color: #117a8b;
+}
+
+.btn-tweet:focus, .btn-tweet.focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-tweet.disabled, .btn-tweet:disabled {
+  color: #fff;
+  background-color: #5499ce;
+  border-color: #17a2b8;
+}
+
+.btn-tweet:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-tweet.dropdown-toggle {
+  color: #fff;
+  background-color: #5499ce;
+  border-color: #10707f;
+}
+
+.btn-tweet:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-tweet.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-insta {
+  color: #fff;
+  background-color: #E1306C;
+  border-color: #17a2b8;
+}
+
+.btn-insta:hover {
+  color: #fff;
+  background-color: #af164a;
+  border-color: #117a8b;
+}
+
+.btn-insta:focus, .btn-insta.focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-insta.disabled, .btn-insta:disabled {
+  color: #fff;
+  background-color: #aa2754;
+  border-color: #17a2b8;
+}
+
+.btn-insta:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-insta.dropdown-toggle {
+  color: #fff;
+  background-color: #aa2754;
+  border-color: #10707f;
+}
+
+.btn-insta:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-insta.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+
+.btn-whatsapp {
+  color: #fff;
+  background-color: #25d366;
+  border-color: #17a2b8;
+}
+
+.btn-whatsapp:hover {
+  color: #fff;
+  background-color: #13ad4c;
+  border-color: #117a8b;
+}
+
+.btn-whatsapp:focus, .btn-whatsapp.focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-whatsapp.disabled, .btn-whatsapp:disabled {
+  color: #fff;
+  background-color: #26a856;
+  border-color: #17a2b8;
+}
+
+.btn-whatsapp:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-whatsapp.dropdown-toggle {
+  color: #fff;
+  background-color: #26a856;
+  border-color: #10707f;
+}
+
+.btn-whatsapp:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-whatsapp.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+
+.btn-email {
+  color: #fff;
+  background-color: #430297;
+  border-color: #17a2b8;
+}
+
+.btn-email:hover {
+  color: #fff;
+  background-color: #2e0466;
+  border-color: #117a8b;
+}
+
+.btn-email:focus, .btn-email.focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
+}
+
+.btn-email.disabled, .btn-email:disabled {
+  color: #fff;
+  background-color: #5517a5;
+  border-color: #17a2b8;
+}
+
+.btn-email:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active,
+.show > .btn-email.dropdown-toggle {
+  color: #fff;
+  background-color: #5517a5;
+  border-color: #10707f;
+}
+
+.btn-email:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus,
+.show > .btn-email.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
 }

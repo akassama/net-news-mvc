@@ -1497,15 +1497,45 @@ using (var conn = new System.Data.SqlClient.SqlConnection(connString))
 
 
 <!-- SocialShareIcons  -->
-@helper SocialShareIcons(string link)
+@helper SocialShareIconsTop(string link, int cols, int offset)
 {
-        <li class="mr-10 ml-0 font-weight-bold text-danger">Share</li>
-        <li><a href="@link" class="a2a_button_facebook"><i class="fab fa-facebook"></i></a></li>
-        <li><a href="@link" class="a2a_button_twitter"><i class="fab fa-twitter"></i></a></li>
-        <li><a href="@link" class="a2a_button_whatsapp"><i class="fab fa-whatsapp"></i></a></li>
-        <li><a href="@link" class="a2a_button_email"><i class="fas fa-envelope"></i></li>
+    <div class="col-md-@cols offset-md-@offset">
+        <ul class="a2a_kit a2a_kit_size_32 a2a_default_style mb-30 list-a-bg-grey list-a-hw-radial-35 list-a-hvr-primary list-li-ml-5">
+            <li><a href="@link" class="bg-facebk a2a_button_facebook text-center text-white"><i class="fab fa-facebook"></i></a></li>
+            <li><a href="@link" class="bg-whatsapp a2a_button_twitter text-center text-white"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="@link" class="bg-tweet a2a_button_whatsapp text-center text-white"><i class="fab fa-whatsapp"></i></a></li>
+            <li><a href="@link" class="bg-email a2a_button_email text-center text-white"><i class="fas fa-envelope"></i></a></li>
+        </ul>
+    </div>
+}
 
-    <script async src="~/Scripts/add-to-any.js"></script>
+<!-- SocialShareIcons  -->
+@helper SocialShareIconsTop(string link)
+{
+    <div class="col-md-4 offset-md-8">
+        <ul class="a2a_kit a2a_kit_size_32 a2a_default_style mb-30 list-a-bg-grey list-a-hw-radial-35 list-a-hvr-primary list-li-ml-5">
+            <li><a href="@link" class="bg-facebk a2a_button_facebook text-center text-white"><i class="fab fa-facebook"></i></a></li>
+            <li><a href="@link" class="bg-whatsapp a2a_button_twitter text-center text-white"><i class="fab fa-twitter"></i></a></li>
+            <li><a href="@link" class="bg-tweet a2a_button_whatsapp text-center text-white"><i class="fab fa-whatsapp"></i></a></li>
+            <li><a href="@link" class="bg-email a2a_button_email text-center text-white"><i class="fas fa-envelope"></i></a></li>
+        </ul>
+    </div>
+}
+
+<!-- SocialShareIcons  -->
+@helper SocialShareIconsBottom(string link)
+{
+        <!--Facebook-->
+        <a href="@link" type="button" class="btn btn-facebk  a2a_button_facebook padded"><i class="fab fa-facebook pr-1"></i> Facebook</a>
+        <!--Instagram-->
+        <a href="@link" type="button" class="btn btn-whatsapp a2a_button_whatsapp  padded margin-left"><i class="fab fa-whatsapp pr-1"></i> Whatsapp</a>
+        <!--Twitter-->
+        <a href="@link" type="button" class="btn btn-tweet  a2a_button_twitter padded margin-left"><i class="fab fa-twitter pr-1"></i> Twitter</a>
+        <!--Email-->
+        <a href="@link" type="button" class="btn btn-email a2a_button_email padded margin-left"><i class="fas fa-envelope pr-1"></i> Email</a>
+
+        <script async src="~/Scripts/add-to-any.js"></script>
+
 }
 
 

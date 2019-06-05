@@ -743,3 +743,27 @@ User : emperorshat@tutanota.com
 System.NullReferenceException
 Message : Object reference not set to an instance of an object.
 StackTrace :    at GambiaReview.Controllers.AdminController.EditMyProfile(AccountsModel accountsModel, HttpPostedFileBase ProfileImage) in C:\Users\Laiman\documents\visual studio 2015\Projects\GambiaReview\GambiaReview\Controllers\AdminController.cs:line 735
+-----------------------------------------------------------------------------
+Date : 5/30/2019 10:12:26 PM
+Function : SendEmail
+User : gambiareview@gmail.com
+
+System.Net.Mail.SmtpException
+Message : Failure sending mail.
+StackTrace :    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at GambiaReview.Models.GMailer.Send() in C:\Users\Laiman\Source\Repos\GambiaReview\GambiaReview\Models\GMailer.cs:line 45
+   at GambiaReview.Models.AppEmailer.SendEmail(String from_email, String from_name, String to_email, String to_name, String to_subject, String h1_text, String h2_text, String paragraph_1, String paragraph_2, String salutation, String sender_name, String sender_position, String sender_number, String sender_email) in C:\Users\Laiman\Source\Repos\GambiaReview\GambiaReview\Models\AppEmailer.cs:line 118
+System.Net.WebException
+Message : Unable to connect to the remote server
+StackTrace :    at System.Net.ServicePoint.GetConnection(PooledStream PooledStream, Object owner, Boolean async, IPAddress& address, Socket& abortSocket, Socket& abortSocket6)
+   at System.Net.PooledStream.Activate(Object owningObject, Boolean async, GeneralAsyncDelegate asyncCallback)
+   at System.Net.PooledStream.Activate(Object owningObject, GeneralAsyncDelegate asyncCallback)
+   at System.Net.ConnectionPool.GetConnection(Object owningObject, GeneralAsyncDelegate asyncCallback, Int32 creationTimeout)
+   at System.Net.Mail.SmtpConnection.GetConnection(ServicePoint servicePoint)
+   at System.Net.Mail.SmtpTransport.GetConnection(ServicePoint servicePoint)
+   at System.Net.Mail.SmtpClient.GetConnection()
+   at System.Net.Mail.SmtpClient.Send(MailMessage message)
+System.Net.Sockets.SocketException
+Message : A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond 64.233.167.109:25
+StackTrace :    at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)
